@@ -1,0 +1,17 @@
+<idea-plugin>
+    <id>org.plugin</id>
+    <name>Sidebar</name>
+    <vendor>Bl</vendor>
+    <description>Plugin with a sidebar that displays two categories.</description>
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.vcs</depends>
+<!--    <depends>git</depends>-->
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="Sidebar"
+                    anchor="left"
+                    factoryClass="com.example.sidebarplugin.SidebarToolWindowFactory"
+                    icon="/icons/Genie-lamp.svg"
+        />
+    </extensions>
+
+</idea-plugin>
