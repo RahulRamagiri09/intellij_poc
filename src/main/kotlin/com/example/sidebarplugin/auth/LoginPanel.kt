@@ -1,4 +1,6 @@
-package com.example.sidebarplugin
+package com.example.sidebarplugin.auth
+import com.example.sidebarplugin.SidebarToolWindow
+import com.example.sidebarplugin.storage.PersistentState
 import java.awt.*
 import javax.swing.*
 import java.io.InputStreamReader
@@ -41,7 +43,7 @@ class LoginPanel(private val project: Project) : JPanel() {
         // Password Field
         constraints.gridx = 1
         add(passwordField, constraints)
-        emailField.text = "sahithi26@gmail.com"
+        emailField.text = "rahul01@gmail.com"
         // Submit Button
         constraints.gridx = 0
         constraints.gridy = 2
@@ -60,7 +62,7 @@ class LoginPanel(private val project: Project) : JPanel() {
             }
         }
         add(submitButton, constraints)
-        passwordField.text = "Sahi@123"
+        passwordField.text = "Test@123"
     }
     // Define userId as a class member
     private var userId: String? = null

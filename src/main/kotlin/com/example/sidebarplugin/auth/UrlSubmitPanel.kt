@@ -1,5 +1,6 @@
-package com.example.sidebarplugin
+package com.example.sidebarplugin.auth
 
+import com.example.sidebarplugin.storage.PersistentState
 import java.awt.*
 import javax.swing.*
 import java.net.HttpURLConnection

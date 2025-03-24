@@ -1,5 +1,8 @@
 package com.example.sidebarplugin
 
+import com.example.sidebarplugin.auth.LoginPanel
+import com.example.sidebarplugin.auth.UrlSubmitPanel
+import com.example.sidebarplugin.storage.PersistentState
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
@@ -14,8 +17,8 @@ class SidebarToolWindowFactory : ToolWindowFactory, DumbAware {
         val urlState = ServiceManager.getService(PersistentState::class.java)
 
 //        // Temporary code to reset the state for demo purposes
-//        urlState.resetState()
-//        println("State reset: storedUrl and authToken set to null")
+        urlState.resetState()
+        println("State reset: storedUrl and authToken set to null")
 
         val storedUrl = urlState.getStoredUrl()
         val authToken = urlState.getAuthToken()

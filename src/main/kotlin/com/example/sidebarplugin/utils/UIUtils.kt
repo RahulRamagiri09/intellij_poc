@@ -150,7 +150,7 @@
 //}
 
 
-package com.example.sidebarplugin
+package com.example.sidebarplugin.utils
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.editor.Editor

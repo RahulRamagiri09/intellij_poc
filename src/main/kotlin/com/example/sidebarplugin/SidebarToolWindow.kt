@@ -453,6 +453,7 @@
 
 package com.example.sidebarplugin
 
+import com.example.sidebarplugin.Assistant.AssistantItems
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.components.JBList

@@ -12,7 +12,7 @@
                     factoryClass="com.example.sidebarplugin.SidebarToolWindowFactory"
                     icon="/icons/Genie-lamp.svg"
         />
-        <applicationService serviceImplementation="com.example.sidebarplugin.PersistentState"/>
+        <applicationService serviceImplementation="com.example.sidebarplugin.storage.PersistentState"/>
     </extensions>
 
 </idea-plugin>

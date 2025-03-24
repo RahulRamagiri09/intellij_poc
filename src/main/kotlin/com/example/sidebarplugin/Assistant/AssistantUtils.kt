@@ -1,4 +1,4 @@
-package com.example.sidebarplugin
+package com.example.sidebarplugin.Assistant
 
 object AssistantUtils {
     fun mapFileExtensionToLanguages(fileExtension: String): String {

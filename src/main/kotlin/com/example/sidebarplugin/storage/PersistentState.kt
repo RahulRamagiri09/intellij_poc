@@ -1,4 +1,4 @@
-package com.example.sidebarplugin
+package com.example.sidebarplugin.storage
 
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State

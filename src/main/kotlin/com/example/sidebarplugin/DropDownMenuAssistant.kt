@@ -1,6 +1,7 @@
 package com.example.sidebarplugin
 
 
+import com.example.sidebarplugin.Assistant.AssistantActions
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBList
 import javax.swing.*

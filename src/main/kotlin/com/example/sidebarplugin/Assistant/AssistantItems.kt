@@ -1,4 +1,4 @@
-package com.example.sidebarplugin
+package com.example.sidebarplugin.Assistant
 
 object AssistantItems {
     fun getItems(): List<String> {

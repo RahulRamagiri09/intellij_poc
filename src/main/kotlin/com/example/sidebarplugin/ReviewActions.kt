@@ -57,9 +57,9 @@
 //
 package com.example.sidebarplugin
 
+import com.example.sidebarplugin.utils.ApiUtils
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
-import javax.swing.JOptionPane
 
 //object ReviewActions {
 //    fun handleReviewSelection(project: Project, reviewType: String) {
@@ -176,10 +176,6 @@ import javax.swing.JOptionPane
 //
 
 //import com.intellij.openapi.project.Project
-import com.intellij.ui.components.JBList
-import javax.swing.*
-import java.awt.Component
-import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 
 object ReviewActions {
