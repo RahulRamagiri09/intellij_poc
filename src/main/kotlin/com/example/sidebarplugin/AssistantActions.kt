@@ -254,8 +254,85 @@
 //}
 //
 
+//
+//package com.example.sidebarplugin
+//import com.example.sidebarplugin.AssistantResponse.*
+//import com.intellij.openapi.fileEditor.FileEditorManager
+//import com.intellij.openapi.project.Project
+//import javax.swing.*
+//import javax.swing.SwingWorker
+//
+//object AssistantActions {
+//    fun handleAssistantRequest(project: Project, assistantType: String) {
+//        val authToken = AuthTokenStorage.accessToken ?: ""
+//        val editor = FileEditorManager.getInstance(project).selectedTextEditor
+//        val selectedText = editor?.selectionModel?.selectedText ?: "No Code Selected"
+//
+//        if (selectedText == "No Code Selected") {
+//            JOptionPane.showMessageDialog(null, "Please select some code before using the assistant.")
+//            return
+//        }
+//
+//        val fileExtension = editor?.virtualFile?.extension ?: "NA"
+//        val language = AssistantUtils.mapFileExtensionToLanguages(fileExtension)
+//
+//        val gitInfo = GitInfo.getGitInfo(project)
+//        val projectName = gitInfo?.repositoryName ?: "NA"
+//        val branchName = gitInfo?.currentBranch ?: "NA"
+//
+//        val apiUrl = when (assistantType) {
+//            "Add Docstring" -> "http://34.46.36.105:3000/genieapi/assistant/add-docstrings"
+//            "Refactor Code" -> "http://34.46.36.105:3000/genieapi/assistant/refactor-code"
+//            "Add Error Handler" -> "http://34.46.36.105:3000/genieapi/assistant/add-error-handlng"
+//            "Add Logging" -> "http://34.46.36.105:3000/genieapi/assistant/add-logging"
+//            "Comment Code" -> "http://34.46.36.105:3000/genieapi/assistant/add-comments"
+//            "Explain Code" -> "http://34.46.36.105:3000/genieapi/assistant/explain-code"
+//            else -> {
+//                JOptionPane.showMessageDialog(null, "Invalid assistant type selected.")
+//                return
+//            }
+//        }
+//
+//        object : SwingWorker<String, Void>() {
+//            private lateinit var loadingDialog: JDialog
+//
+//            override fun doInBackground(): String {
+//                SwingUtilities.invokeLater { loadingDialog = UIUtils.showLoadingDialog() }
+//                return ApiUtils.sendReviewRequest(apiUrl, selectedText, language, authToken, projectName, branchName)
+//            }
+//
+//            override fun done() {
+//                try {
+//                    val response = get()
+//                    val processedText = when (assistantType) {
+//                        "Add Docstring" -> JsonDocString.extractDocumentation(response)
+//                        "Refactor Code" -> JsonRefactor.extractRefactoredCode(response)
+//                        "Add Error Handler" -> JsonErrorHandler.extractErrorHandlerCode(response)
+//                        "Add Logging" -> JsonLogging.extractAddLogging(response)
+//                        "Comment Code" -> JsonCommentCode.extractCommentCode(response)
+//                        "Explain Code" -> JsonExplainCode.extractExplainCode(response)
+//
+//                        else -> "Invalid assistant type."
+//                    }
+//
+//                    SwingUtilities.invokeLater {
+//                        loadingDialog.dispose()
+//                        UIUtils.showResponseDialog(project, editor, processedText, selectedText)
+//                    }
+//                } catch (e: Exception) {
+//                    SwingUtilities.invokeLater {
+//                        loadingDialog.dispose()
+//                        JOptionPane.showMessageDialog(null, "Error: ${e.message}", "API Error", JOptionPane.ERROR_MESSAGE)
+//                    }
+//                }
+//            }
+//        }.execute()
+//    }
+//}
+
 
 package com.example.sidebarplugin
+
 import com.example.sidebarplugin.AssistantResponse.*
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
@@ -286,6 +363,7 @@ object AssistantActions {
             "Add Error Handler" -> "http://34.46.36.105:3000/genieapi/assistant/add-error-handlng"
             "Add Logging" -> "http://34.46.36.105:3000/genieapi/assistant/add-logging"
             "Comment Code" -> "http://34.46.36.105:3000/genieapi/assistant/add-comments"
+            "Explain Code" -> "http://34.46.36.105:3000/genieapi/assistant/explain-code"
             else -> {
                 JOptionPane.showMessageDialog(null, "Invalid assistant type selected.")
                 return
@@ -303,18 +381,23 @@ object AssistantActions {
             override fun done() {
                 try {
                     val response = get()
-                    val processedText = when (assistantType) {
+                    val processedContent: Any = when (assistantType) {
                         "Add Docstring" -> JsonDocString.extractDocumentation(response)
                         "Refactor Code" -> JsonRefactor.extractRefactoredCode(response)
                         "Add Error Handler" -> JsonErrorHandler.extractErrorHandlerCode(response)
                         "Add Logging" -> JsonLogging.extractAddLogging(response)
                         "Comment Code" -> JsonCommentCode.extractCommentCode(response)
+                        "Explain Code" -> JsonExplainCode.extractExplainCode(response) // Return JPanel for Explain Code
                         else -> "Invalid assistant type."
                     }
 
                     SwingUtilities.invokeLater {
                         loadingDialog.dispose()
-                        UIUtils.showResponseDialog(project, editor, processedText, selectedText)
+                        when (processedContent) {
+                            is JPanel -> UIUtils.showResponsePanel(project, editor, processedContent) // Show JPanel for "Explain Code"
+                            is String -> UIUtils.showResponseDialog(project, editor, processedContent, selectedText) // Show JTextArea for others
+                            else -> JOptionPane.showMessageDialog(null, "Unexpected response type.", "Error", JOptionPane.ERROR_MESSAGE)
+                        }
                     }
                 } catch (e: Exception) {
                     SwingUtilities.invokeLater {
