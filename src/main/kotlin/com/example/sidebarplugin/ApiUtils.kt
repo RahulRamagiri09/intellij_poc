@@ -12,6 +12,7 @@ object ApiUtils {
             }
 
             val url = URL(apiUrl)
+            println("******* api url, $apiUrl, $url")
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "POST"
             connection.setRequestProperty("Authorization", "Bearer $authToken")
@@ -19,15 +20,35 @@ object ApiUtils {
             connection.doOutput = true
 
             val safeText = text.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n")
-
-            val jsonInputString = """
+//
+//            val jsonInputString = """
+//                {
+//                    "code": "$safeText",
+//                    "language": "$language",
+//                    "project_name": "$projectName",
+//                    "branch_name": "$branchName"
+//                }
+//            """.trimIndent()
+            // Use "prompt" if URL matches, else use "code"
+            val jsonInputString = if (apiUrl == "http://34.46.36.105:3000/genieapi/assistant/code-generation") {
+                """
+                {
+                    "prompt": "$safeText",
+                    "language": "$language",
+                    "project_name": "$projectName",
+                    "branch_name": "$branchName"
+                }
+                """.trimIndent()
+            } else {
+                """
                 {
                     "code": "$safeText",
                     "language": "$language",
                     "project_name": "$projectName",
                     "branch_name": "$branchName"
                 }
-            """.trimIndent()
+                """.trimIndent()
+            }
 
             connection.outputStream.use { os ->
                 os.write(jsonInputString.toByteArray(StandardCharsets.UTF_8))
