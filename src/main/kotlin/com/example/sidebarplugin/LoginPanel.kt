@@ -240,7 +240,7 @@ class LoginPanel(private val project: Project) : JPanel() {
     private fun submitLoginForm(email: String, password: String) {
         SwingUtilities.invokeLater {
             try {
-                val apiUrl = "http://34.57.32.181:3000/fastapi/auth/login" // Replace with your API URL
+                val apiUrl = "http://34.46.36.105:3000/genieapi/auth/login" // Replace with your API URL
                 val requestBody = "email=$email&password=$password"
 
                 val url = URL(apiUrl)

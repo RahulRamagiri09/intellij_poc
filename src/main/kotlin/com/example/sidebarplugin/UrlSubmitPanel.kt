@@ -121,7 +121,7 @@ class UrlSubmitPanel(private val project: Project) : JPanel() {
         // Centering the container panel inside the main panel
         constraints.gridy = 0
         add(containerPanel, constraints)
-        urlTextField.text = "http://34.57.32.181:3000"
+        urlTextField.text = "http://34.46.36.105:3000/genieapi"
 
         // Button Action Listener
         submitButton.addActionListener {
@@ -129,7 +129,7 @@ class UrlSubmitPanel(private val project: Project) : JPanel() {
             if (url.isEmpty()) {
                 showMessage("Please enter a URL.", JOptionPane.WARNING_MESSAGE)
             } else {
-                val finalUrl = "$url/fastapi/touch"
+                val finalUrl = "$url/touch"
                 println("Final URL to hit: $finalUrl")
                 submitTouchRequest(finalUrl)
             }
