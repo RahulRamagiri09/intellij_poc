@@ -195,8 +195,8 @@ object ReviewActions {
         val selectedCode = FileEditorManager.getInstance(project).selectedTextEditor?.selectionModel?.selectedText ?: "No Code Selected"
 
         val apiUrl = when (reviewType) {
-            "Performance" -> "http://34.57.32.181:3000/fastapi/review/performance"
-            "Code Overall Review" -> "http://34.57.32.181:3000/fastapi/review/overall"
+            "Performance" -> "http://34.46.36.105:3000/genieapi/review/performance"
+            "Code Overall Review" -> "http://34.46.36.105:3000/genieapi/review/overall"
             else -> return "Invalid review type selected."
         }
 

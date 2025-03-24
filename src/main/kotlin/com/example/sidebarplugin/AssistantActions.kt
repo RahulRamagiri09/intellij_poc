@@ -420,8 +420,8 @@ fun handleAssistantRequest(project: Project, assistantType: String) {
     val branchName = gitInfo?.currentBranch ?: "NA"
 
     val apiUrl = when (assistantType) {
-        "Doc String" -> "http://34.57.32.181:3000/fastapi/assistant/add-docstrings"
-        "Refactor" -> "http://34.57.32.181:3000/fastapi/assistant/refactor-code"
+        "Doc String" -> "http://34.46.36.105:3000/genieapi/assistant/add-docstrings"
+        "Refactor" -> "http://34.46.36.105:3000/genieapi/assistant/refactor-code"
         else -> {
             JOptionPane.showMessageDialog(null, "Invalid assistant type selected.")
             return
