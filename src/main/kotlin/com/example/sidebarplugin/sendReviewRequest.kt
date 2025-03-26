@@ -54,58 +54,58 @@
 //        }
 //    }
 //}
-
-package com.example.sidebarplugin
-
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
-import java.net.HttpURLConnection
-import java.net.URL
-
-fun sendReviewRequest(text: String, language: String, authToken: String, projectName: String, branchName: String) {
-    try {
-        val url = URL("http://34.123.3.28:3000/fastapi/review/overall") // Replace with actual API URL
-        println("enter to api")
-        val connection = url.openConnection() as HttpURLConnection
-
-        connection.requestMethod = "POST"
-        connection.setRequestProperty("Authorization", "Bearer $authToken")
-        connection.setRequestProperty("Content-Type", "application/json")
-        connection.doOutput = true
-
-        val safeText = text.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
-
-        if (safeText.isBlank() || language.isBlank() || projectName.isBlank() || branchName.isBlank()) {
-            println("Error: Missing required parameters.")
-            return
-        }
-
-
-        val requestBody = """
-            {
-                "code": "$safeText",
-                "language": "$language",
-                "project_name": "$projectName",
-                "branch_name": "$branchName"
-            }
-        """.trimIndent()
-        println("Request Body: $requestBody")
-
-
-        connection.outputStream.use { it.write(requestBody.toByteArray()) }
-
-        if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-            val response = connection.inputStream.bufferedReader().use { it.readText() }
-            println("Response: $response")
-        } else {
-//            println("Error: HTTP ${connection.responseCode}")
-            val errorResponse = connection.errorStream.bufferedReader().use { it.readText() }
-            println("Error: HTTP ${connection.responseCode}, $errorResponse")
-        }
-
-        connection.disconnect()
-    } catch (e: Exception) {
-        println("API Request Failed: ${e.message}")
-    }
-}
+//
+//package com.example.sidebarplugin
+//
+//import kotlinx.serialization.json.Json
+//import kotlinx.serialization.json.jsonObject
+//import kotlinx.serialization.json.jsonPrimitive
+//import java.net.HttpURLConnection
+//import java.net.URL
+//
+//fun sendReviewRequest(text: String, language: String, authToken: String, projectName: String, branchName: String) {
+//    try {
+//        val url = URL("http://34.123.3.28:3000/fastapi/review/overall") // Replace with actual API URL
+//        println("enter to api")
+//        val connection = url.openConnection() as HttpURLConnection
+//
+//        connection.requestMethod = "POST"
+//        connection.setRequestProperty("Authorization", "Bearer $authToken")
+//        connection.setRequestProperty("Content-Type", "application/json")
+//        connection.doOutput = true
+//
+//        val safeText = text.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
+//
+//        if (safeText.isBlank() || language.isBlank() || projectName.isBlank() || branchName.isBlank()) {
+//            println("Error: Missing required parameters.")
+//            return
+//        }
+//
+//
+//        val requestBody = """
+//            {
+//                "code": "$safeText",
+//                "language": "$language",
+//                "project_name": "$projectName",
+//                "branch_name": "$branchName"
+//            }
+//        """.trimIndent()
+//        println("Request Body: $requestBody")
+//
+//
+//        connection.outputStream.use { it.write(requestBody.toByteArray()) }
+//
+//        if (connection.responseCode == HttpURLConnection.HTTP_OK) {
+//            val response = connection.inputStream.bufferedReader().use { it.readText() }
+//            println("Response: $response")
+//        } else {
+////            println("Error: HTTP ${connection.responseCode}")
+//            val errorResponse = connection.errorStream.bufferedReader().use { it.readText() }
+//            println("Error: HTTP ${connection.responseCode}, $errorResponse")
+//        }
+//
+//        connection.disconnect()
+//    } catch (e: Exception) {
+//        println("API Request Failed: ${e.message}")
+//    }
+//}

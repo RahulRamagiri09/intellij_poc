@@ -43,7 +43,7 @@ class LoginPanel(private val project: Project) : JPanel() {
         // Password Field
         constraints.gridx = 1
         add(passwordField, constraints)
-        emailField.text = "rahul01@gmail.com"
+        emailField.text = "rahul97@gmail.com"
         // Submit Button
         constraints.gridx = 0
         constraints.gridy = 2

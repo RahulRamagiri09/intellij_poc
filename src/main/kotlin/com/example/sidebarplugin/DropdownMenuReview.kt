@@ -1,10 +1,14 @@
+package com.example.sidebarplugin
+
+import com.example.sidebarplugin.Review.ReviewActions
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBList
 import javax.swing.*
 import java.awt.Component
-import com.example.sidebarplugin.ReviewActions
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 
-object DropdownMenuReview {
+object DropDownMenuReview {
     fun createDropdownMenu(title: String, items: List<String>, project: Project): JPanel {
         val dropdownPanel = JPanel()
         dropdownPanel.layout = BoxLayout(dropdownPanel, BoxLayout.Y_AXIS)
@@ -16,23 +20,15 @@ object DropdownMenuReview {
         subcategoryList.selectionMode = ListSelectionModel.SINGLE_SELECTION
         subcategoryList.visibleRowCount = 4
 
-        subcategoryList.addListSelectionListener { e ->
-            if (!e.valueIsAdjusting) {
+        subcategoryList.addMouseListener(object : MouseAdapter() {
+            override fun mouseClicked(e: MouseEvent?) {
                 val selectedItem = subcategoryList.selectedValue
                 if (selectedItem != null) {
-                    // Call handleReviewSelection and get the response
-                    val response = ReviewActions.handleReviewSelection(project, selectedItem)
-
-                    // Show API response in a JOptionPane
-                    JOptionPane.showMessageDialog(
-                        null,
-                        response,
-                        "$title - Review Result",
-                        JOptionPane.INFORMATION_MESSAGE
-                    )
+                    ReviewActions.handleReviewRequest(project, selectedItem)
+                    subcategoryList.clearSelection() // Ensures re-selection triggers the API call again
                 }
             }
-        }
+        })
 
         dropdownPanel.add(toggleButton)
         dropdownPanel.add(JScrollPane(subcategoryList))

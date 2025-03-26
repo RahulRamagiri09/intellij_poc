@@ -1,5 +1,6 @@
-package com.example.sidebarplugin.Assistant
+package com.example.sidebarplugin.Review
 
+import com.example.sidebarplugin.Assistant.AssistantUtils
 import com.example.sidebarplugin.AssistantResponse.*
 import com.example.sidebarplugin.GitInfo
 import com.example.sidebarplugin.storage.PersistentState
@@ -12,8 +13,8 @@ import javax.swing.SwingWorker
 import com.intellij.openapi.components.ServiceManager
 
 
-object AssistantActions {
-    fun handleAssistantRequest(project: Project, assistantType: String) {
+object ReviewActions {
+    fun handleReviewRequest(project: Project, reviewType: String) {
 //        val authToken = AuthTokenStorage.accessToken ?: ""
         // Retrieve the instance of PersistentState and get authToken
         val persistentState = ServiceManager.getService(PersistentState::class.java)
@@ -35,24 +36,10 @@ object AssistantActions {
         val projectName = gitInfo?.repositoryName ?: "NA"
         val branchName = gitInfo?.currentBranch ?: "NA"
 
-        val apiUrl = when (assistantType) {
-//            "Add Docstring" -> "http://34.46.36.105:3000/genieapi/assistant/add-docstrings"
-//            "Refactor Code" -> "http://34.46.36.105:3000/genieapi/assistant/refactor-code"
-//            "Add Error Handler" -> "http://34.46.36.105:3000/genieapi/assistant/add-error-handlng"
-//            "Add Logging" -> "http://34.46.36.105:3000/genieapi/assistant/add-logging"
-//            "Comment Code" -> "http://34.46.36.105:3000/genieapi/assistant/add-comments"
-//            "Explain Code" -> "http://34.46.36.105:3000/genieapi/assistant/explain-code"
-//            "Code Generation" -> "http://34.46.36.105:3000/genieapi/assistant/code-generation"
-            "Add Docstring" -> "$storedUrl/assistant/add-docstrings"
-            "Refactor Code" -> "$storedUrl/assistant/refactor-code"
-            "Add Error Handler" -> "$storedUrl/assistant/add-error-handlng"
-            "Add Logging" -> "$storedUrl/assistant/add-logging"
-            "Comment Code" -> "$storedUrl/assistant/add-comments"
-            "Explain Code" -> "$storedUrl/assistant/explain-code"
-            "Code Generation" -> "$storedUrl/assistant/code-generation"
-            "Unit Test Code" -> "$storedUrl/assistant/unittest-code"
+        val apiUrl = when (reviewType) {
+            "Overall Review" -> "$storedUrl/review/review"
             else -> {
-                JOptionPane.showMessageDialog(null, "Invalid assistant type selected.")
+                JOptionPane.showMessageDialog(null, "Invalid Review type selected.")
                 return
             }
         }
@@ -68,16 +55,10 @@ object AssistantActions {
             override fun done() {
                 try {
                     val response = get()
-                    val processedContent: Any = when (assistantType) {
-                        "Add Docstring" -> JsonDocString.extractDocumentation(response)
-                        "Refactor Code" -> JsonRefactor.extractRefactoredCode(response)
-                        "Add Error Handler" -> JsonErrorHandler.extractErrorHandlerCode(response)
-                        "Add Logging" -> JsonLogging.extractAddLogging(response)
-                        "Comment Code" -> JsonCommentCode.extractCommentCode(response)
-                        "Explain Code" -> JsonExplainCode.extractExplainCode(response) // Return JPanel for Explain Code
-                        "Code Generation" -> JsonCodeGeneration.extractCodeGeneration(response)
-                        "Unit Test Code" -> JsonUnitTestCode.extractUnitTestCode(response)
-                        else -> "Invalid assistant type."
+                    val processedContent: Any = when (reviewType) {
+                        "Overall Review" -> JsonOverallReview.extractOverallReview(response)
+
+                        else -> "Invalid review type."
                     }
 
                     SwingUtilities.invokeLater {
