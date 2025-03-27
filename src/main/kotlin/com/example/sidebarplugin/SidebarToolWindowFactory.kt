@@ -17,8 +17,8 @@ class SidebarToolWindowFactory : ToolWindowFactory, DumbAware {
         val urlState = ServiceManager.getService(PersistentState::class.java)
 
 //        // Temporary code to reset the state for demo purposes
-//        urlState.resetState()
-//        println("State reset: storedUrl and authToken set to null")
+        urlState.resetState()
+        println("State reset: storedUrl and authToken set to null")
 
         val storedUrl = urlState.getStoredUrl()
         val authToken = urlState.getAuthToken()

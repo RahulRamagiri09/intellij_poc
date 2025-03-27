@@ -1,4 +1,4 @@
-package com.example.sidebarplugin.AssistantResponse
+package com.example.sidebarplugin.Assistant.AssistantResponse
 
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.table.JBTable

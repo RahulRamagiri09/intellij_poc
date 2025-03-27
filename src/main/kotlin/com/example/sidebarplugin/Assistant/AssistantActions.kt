@@ -1,7 +1,8 @@
 package com.example.sidebarplugin.Assistant
 
-import com.example.sidebarplugin.AssistantResponse.*
+import com.example.sidebarplugin.Assistant.AssistantResponse.*
 import com.example.sidebarplugin.GitInfo
+import com.example.sidebarplugin.LanguageDetectUtils
 import com.example.sidebarplugin.storage.PersistentState
 import com.example.sidebarplugin.utils.ApiUtils
 import com.example.sidebarplugin.utils.UIUtils
@@ -29,7 +30,7 @@ object AssistantActions {
         }
 
         val fileExtension = editor?.virtualFile?.extension ?: "NA"
-        val language = AssistantUtils.mapFileExtensionToLanguages(fileExtension)
+        val language = LanguageDetectUtils.mapFileExtensionToLanguages(fileExtension)
 
         val gitInfo = GitInfo.getGitInfo(project)
         val projectName = gitInfo?.repositoryName ?: "NA"

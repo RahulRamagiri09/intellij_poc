@@ -35,13 +35,33 @@ class SidebarToolWindow(private val project: Project) : SimpleToolWindowPanel(tr
         val dropdownPanel = JPanel()
         dropdownPanel.layout = BoxLayout(dropdownPanel, BoxLayout.Y_AXIS)
 
-        // Usage
+        // Auth section
+        val authDropdown = DropDownMenuAuth.createDropdownMenu("Auth", mainPanel, project)
+
+        dropdownPanel.add(authDropdown)
+
+        // Assistant section
         val assistantDropdown = DropDownMenuAssistant.createDropdownMenu("Assistant", AssistantItems.getItems(), project)
         dropdownPanel.add(assistantDropdown)
 
+        // Review section
         val reviewDropdown = DropDownMenuReview.createDropdownMenu("Review", ReviewItems.getItems(), project)
         dropdownPanel.add(reviewDropdown)
 
         mainPanel.add(JBScrollPane(dropdownPanel), BorderLayout.CENTER)
+    }
+
+    private fun createDropdownMenu(title: String, items: List<String>): JPanel {
+        val panel = JPanel()
+        panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
+        val label = JLabel(title)
+        label.font = Font("Arial", Font.BOLD, 12)
+        panel.add(label)
+
+        val list = JBList(items)
+        list.selectionMode = ListSelectionModel.SINGLE_SELECTION
+        panel.add(JBScrollPane(list))
+
+        return panel
     }
 }

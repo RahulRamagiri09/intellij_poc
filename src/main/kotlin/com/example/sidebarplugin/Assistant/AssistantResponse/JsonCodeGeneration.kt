@@ -1,10 +1,10 @@
-package com.example.sidebarplugin.AssistantResponse
+package com.example.sidebarplugin.Assistant.AssistantResponse
 
 import kotlinx.serialization.json.*
 
-object JsonErrorHandler {
-    fun extractErrorHandlerCode(response: String): String {
-        println("Raw API Response (ErrorHandler): $response") // Debugging log
+object JsonCodeGeneration {
+    fun extractCodeGeneration(response: String): String {
+        println("Raw API Response (JsonCodeGeneration): $response") // Debugging log
 
         if (!response.trim().startsWith("{")) { // Check if response is valid JSON
             return "Error: Response is not valid JSON: $response"
@@ -12,7 +12,7 @@ object JsonErrorHandler {
 
         return try {
             val jsonElement = Json.parseToJsonElement(response).jsonObject
-            jsonElement["exceptionHandlingAdded"]?.jsonPrimitive?.content ?: "No refactored code available."
+            jsonElement["generatedCode"]?.jsonPrimitive?.content ?: "No refactored code available."
         } catch (e: Exception) {
             "Invalid JSON response: ${e.message} (Response: $response)"
         }
