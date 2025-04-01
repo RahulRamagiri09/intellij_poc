@@ -9,7 +9,7 @@ import java.awt.FlowLayout
 import com.intellij.openapi.ui.DialogWrapper
 
 object UIUtils {
-    fun showLoadingDialog(): JDialog {
+    fun showLoadingDialog(onCancel: () -> Unit): JDialog {
         val dialog = JDialog()
         dialog.title = "Processing..."
         dialog.setSize(300, 100)
@@ -17,11 +17,19 @@ object UIUtils {
         dialog.setLocationRelativeTo(null)
         dialog.isUndecorated = true
 
+
         val panel = JPanel(FlowLayout())
         val progressBar = JProgressBar()
         progressBar.isIndeterminate = true
         panel.add(JLabel("Processing request..."))
         panel.add(progressBar)
+
+        val stopButton = JButton("Cancel")
+        stopButton.addActionListener {
+            onCancel()
+            dialog.dispose()
+        }
+        panel.add(stopButton)
 
         dialog.add(panel, BorderLayout.CENTER)
         dialog.isModal = true
