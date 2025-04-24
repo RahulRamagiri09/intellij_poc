@@ -26,7 +26,7 @@ object JsonUnitTestCode {
             panel.add(createTable(arrayOf("Description"), listOf(
                 arrayOf(jsonElement["details"]?.jsonPrimitive?.content ?: "N/A")
             )))
-            panel.add(Box.createVerticalStrut(15))
+            panel.add(Box.createVerticalStrut(20))
 
 
             // **Unit Tests Section**
@@ -34,16 +34,16 @@ object JsonUnitTestCode {
             val unitTestData = jsonElement["unitTests"]?.jsonArray?.map { test ->
                 val testObject = test.jsonObject
                 arrayOf<Any>(
-                    "<html><pre>${testObject["testCase"]?.jsonPrimitive?.content?.replace("\n", "<br>") ?: "N/A"}</pre></html>",
+                    testObject["testCase"]?.jsonPrimitive?.content ?: "N/A",
                     testObject["explanation"]?.jsonPrimitive?.content ?: "N/A",
-                    testObject["importance"]?.jsonPrimitive?.int ?: 0 as Any, // Explicitly cast to Any
+                    testObject["importance"]?.jsonPrimitive?.int ?: 0 as Any,
                     testObject["severity"]?.jsonPrimitive?.content ?: "N/A"
 
                 )
             } ?: emptyList()
 
             panel.add(createTable(arrayOf("Test Case", "Explanation", "Importance", "Severity"), unitTestData))
-            panel.add(Box.createVerticalStrut(15))
+            panel.add(Box.createVerticalStrut(20))
 
             // **Wrap the ENTIRE panel inside a scroll pane**
             val scrollPane = JBScrollPane(panel)
@@ -73,7 +73,6 @@ object JsonUnitTestCode {
         return wrapper
     }
 
-    // **Helper Method: Create Table with Headers & Multi-Line Renderer**
     private fun createTable(columnNames: Array<String>, data: List<Array<Any>>): JPanel {
         val model = DefaultTableModel(columnNames, 0)
         data.forEach { model.addRow(it) }
@@ -85,19 +84,46 @@ object JsonUnitTestCode {
             table.columnModel.getColumn(i).cellRenderer = renderer
         }
 
-//        table.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
-        table.autoResizeMode = JTable.AUTO_RESIZE_OFF // 🔹 Prevent auto shrinking
-        if (table.columnCount >= 4) {  // 🔹 Ensure columns exist before setting width
-            table.columnModel.getColumn(0).preferredWidth = 500  // Test Case
-            table.columnModel.getColumn(1).preferredWidth = 500  // Explanation
-            table.columnModel.getColumn(2).preferredWidth = 80  // Importance
-            table.columnModel.getColumn(3).preferredWidth = 80  // Severity
+        // Set custom header style
+        val headerFont = Font("Arial", Font.BOLD, 14)
+        val headerRenderer = object : JLabel(), TableCellRenderer {
+            init {
+                font = headerFont
+                horizontalAlignment = JLabel.CENTER
+                isOpaque = true
+                background = Color(0x07, 0x43, 0x9C) // Custom blue
+                foreground = Color.WHITE
+            }
+
+            override fun getTableCellRendererComponent(
+                table: JTable,
+                value: Any?,
+                isSelected: Boolean,
+                hasFocus: Boolean,
+                row: Int,
+                column: Int
+            ): Component {
+                text = value?.toString() ?: ""
+                return this
+            }
         }
-        table.rowHeight = 150 // Adjust row height for better readability
-        table.tableHeader.reorderingAllowed = false // Prevent column reordering
+
+        table.tableHeader.defaultRenderer = headerRenderer
+
+        // Table layout and appearance tweaks
+        table.autoResizeMode = JTable.AUTO_RESIZE_OFF
+        if (table.columnCount >= 4) {
+            table.columnModel.getColumn(0).preferredWidth = 500
+            table.columnModel.getColumn(1).preferredWidth = 500
+            table.columnModel.getColumn(2).preferredWidth = 80
+            table.columnModel.getColumn(3).preferredWidth = 80
+        }
+
+        table.rowHeight = 150
+        table.tableHeader.reorderingAllowed = false
 
         val tablePanel = JPanel(BorderLayout())
-        tablePanel.add(table.tableHeader, BorderLayout.NORTH) // **Ensure header is visible**
+        tablePanel.add(table.tableHeader, BorderLayout.NORTH)
         tablePanel.add(table, BorderLayout.CENTER)
 
         return tablePanel
@@ -130,6 +156,8 @@ class MultiLineTableCellRendererrr : JTextArea(), TableCellRenderer {
         column: Int
     ): Component {
         text = value?.toString() ?: ""
+//        background = if (isSelected) Color(0xD9E1F2) else Color.WHITE
+//        foreground = Color.WHITE
         return this
     }
 }

@@ -20,15 +20,7 @@ object ApiUtils {
             connection.doOutput = true
 
             val safeText = text.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n")
-//
-//            val jsonInputString = """
-//                {
-//                    "code": "$safeText",
-//                    "language": "$language",
-//                    "project_name": "$projectName",
-//                    "branch_name": "$branchName"
-//                }
-//            """.trimIndent()
+
             // Use "prompt" if URL matches, else use "code"
             val jsonInputString = if (apiUrl == "http://34.46.36.105:3000/genieapi/assistant/code-generation") {
                 """
