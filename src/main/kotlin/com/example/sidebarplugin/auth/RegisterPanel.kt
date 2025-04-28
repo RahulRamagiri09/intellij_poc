@@ -95,18 +95,29 @@ class RegisterPanel(private val project: Project) : JPanel() {
         add(loginPanel, constraints)
     }
 
+//    private fun addField(label: String, field: JComponent, constraints: GridBagConstraints, row: Int) {
+//        constraints.gridx = 0
+//        constraints.gridy = row * 2
+//        add(JLabel(label), constraints)
+//        constraints.gridy = row * 2 + 1
+//        add(field, constraints)
+//    }
     private fun addField(label: String, field: JComponent, constraints: GridBagConstraints, row: Int) {
         constraints.gridx = 0
-        constraints.gridy = row * 2
+        constraints.gridy = row
         add(JLabel(label), constraints)
-        constraints.gridy = row * 2 + 1
+
+        constraints.gridx = 1
         add(field, constraints)
     }
 
+
     private fun submitRegisterForm(username: String, fullName: String, email: String, password: String, confirmPassword: String, companyName: String) {
+        val persistentState = ServiceManager.getService(PersistentState::class.java)
+        val storedUrl = persistentState.getStoredUrl()?.trimEnd('/') ?: ""
         SwingUtilities.invokeLater {
             try {
-                val apiUrl = "http://34.46.36.105:3000/genieapi/auth/register"
+                val apiUrl = "$storedUrl/auth/register"
                 val requestBody = Json.encodeToString(JsonObject(mapOf(
                     "username" to JsonPrimitive(username),
                     "full_name" to JsonPrimitive(fullName),

@@ -95,9 +95,11 @@ class LoginPanel(private val project: Project) : JPanel() {
 
     // Function to submit login form to API
     private fun submitLoginForm(email: String, password: String) {
+        val persistentState = ServiceManager.getService(PersistentState::class.java)
+        val storedUrl = persistentState.getStoredUrl()?.trimEnd('/') ?: ""
         SwingUtilities.invokeLater {
             try {
-                val apiUrl = "http://34.46.36.105:3000/genieapi/auth/login" // Replace with your API URL
+                val apiUrl = "$storedUrl/auth/login" // Replace with your API URL
                 val requestBody = "email=$email&password=$password"
                 val url = URL(apiUrl)
                 val connection = url.openConnection() as HttpURLConnection

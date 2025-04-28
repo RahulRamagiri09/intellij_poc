@@ -11,7 +11,10 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 class UrlSubmitPanel(private val project: Project) : JPanel() {
-    private val urlTextField = JTextField(20) // Text field for URL input
+    private val urlTextField = JTextField(20).apply {
+        preferredSize = Dimension(300, 30)
+        maximumSize = Dimension(300, 30)
+    }
     private val submitButton = JButton("Submit") // Submit button
     private val urlState = ServiceManager.getService(PersistentState::class.java) // Global storage
 
