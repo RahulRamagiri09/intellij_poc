@@ -12,6 +12,7 @@ import kotlinx.serialization.json.*
 import javax.swing.JOptionPane
 import com.intellij.openapi.components.ServiceManager
 import kotlinx.serialization.encodeToString
+import com.example.sidebarplugin.SidebarToolWindow
 
 class RegisterPanel(private val project: Project) : JPanel() {
     private val usernameField = JTextField(20).apply {
@@ -93,6 +94,19 @@ class RegisterPanel(private val project: Project) : JPanel() {
             add(loginButton)
         }
         add(loginPanel, constraints)
+
+        // Back Button Section
+        constraints.gridy = 14
+        val backButton = JButton("Back").apply {
+            preferredSize = Dimension(100, 30)
+            addActionListener {
+                returnToMainSidePanel()
+            }
+        }
+        val backPanel = JPanel(FlowLayout(FlowLayout.CENTER)).apply {
+            add(backButton)
+        }
+        add(backPanel, constraints)
     }
 
 //    private fun addField(label: String, field: JComponent, constraints: GridBagConstraints, row: Int) {
@@ -159,6 +173,17 @@ class RegisterPanel(private val project: Project) : JPanel() {
             parentToolWindow.removeAll()
             parentToolWindow.layout = BorderLayout()
             parentToolWindow.add(LoginPanel(project), BorderLayout.CENTER)
+            parentToolWindow.revalidate()
+            parentToolWindow.repaint()
+        }
+    }
+
+    private fun returnToMainSidePanel() {
+        val parentToolWindow = SwingUtilities.getAncestorOfClass(JPanel::class.java, this)
+        if (parentToolWindow is JPanel) {
+            parentToolWindow.removeAll()
+            parentToolWindow.layout = BorderLayout()
+            parentToolWindow.add(SidebarToolWindow(project), BorderLayout.CENTER)
             parentToolWindow.revalidate()
             parentToolWindow.repaint()
         }

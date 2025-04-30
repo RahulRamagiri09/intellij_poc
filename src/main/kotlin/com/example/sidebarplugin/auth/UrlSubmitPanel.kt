@@ -9,6 +9,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.components.ServiceManager
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import com.example.sidebarplugin.SidebarToolWindow
+
 
 class UrlSubmitPanel(private val project: Project) : JPanel() {
     private val urlTextField = JTextField(20).apply {
@@ -16,6 +18,7 @@ class UrlSubmitPanel(private val project: Project) : JPanel() {
         maximumSize = Dimension(300, 30)
     }
     private val submitButton = JButton("Submit") // Submit button
+    private val backButton = JButton("Back")
     private val urlState = ServiceManager.getService(PersistentState::class.java) // Global storage
 
     init {
@@ -31,6 +34,9 @@ class UrlSubmitPanel(private val project: Project) : JPanel() {
         containerPanel.layout = BoxLayout(containerPanel, BoxLayout.Y_AXIS)
         containerPanel.alignmentX = Component.CENTER_ALIGNMENT
 
+
+
+
         // Instruction Label
         val instructionLabel = JLabel("Please enter the domain URL in the below field:")
         instructionLabel.alignmentX = Component.CENTER_ALIGNMENT
@@ -44,23 +50,41 @@ class UrlSubmitPanel(private val project: Project) : JPanel() {
         urlTextField.maximumSize = Dimension(300, 30) // Fixed width for the text field
         urlTextField.alignmentX = Component.CENTER_ALIGNMENT
 
-        // Submit Button Panel (to center align)
-        val buttonPanel = JPanel()
-        buttonPanel.layout = BoxLayout(buttonPanel, BoxLayout.Y_AXIS)
-        submitButton.alignmentX = Component.CENTER_ALIGNMENT
-
+//        // Submit Button Panel (to center align)
+//        val buttonPanel = JPanel()
+//        buttonPanel.layout = BoxLayout(buttonPanel, BoxLayout.Y_AXIS)
+//        submitButton.alignmentX = Component.CENTER_ALIGNMENT
+//
         // Add components to the panels
 
         inputPanel.add(Box.createVerticalStrut(5)) // Space between label and text field
         inputPanel.add(urlTextField)
 
-        buttonPanel.add(Box.createVerticalStrut(5)) // Space between input and button
+
+
+
+        // Submit and Back Button Panel
+        val buttonPanel = JPanel()
+        buttonPanel.layout = BoxLayout(buttonPanel, BoxLayout.X_AXIS) // Horizontal alignment
+        buttonPanel.alignmentX = Component.CENTER_ALIGNMENT
+
+        backButton.alignmentX = Component.CENTER_ALIGNMENT
+        submitButton.alignmentX = Component.CENTER_ALIGNMENT
+
+        buttonPanel.add(backButton)
+        buttonPanel.add(Box.createHorizontalStrut(10)) // Small space between buttons
         buttonPanel.add(submitButton)
+
+        // Add action listeners
+        backButton.addActionListener {
+            returnToMainSidePanel()
+        }
 
         // Add components to the main container panel
         containerPanel.add(instructionLabel)
-        containerPanel.add(Box.createVerticalStrut(10)) // Space
+        containerPanel.add(Box.createVerticalStrut(10))
         containerPanel.add(inputPanel)
+        containerPanel.add(Box.createVerticalStrut(15))
         containerPanel.add(buttonPanel)
 
         // Add the container panel to the main layout
@@ -173,6 +197,19 @@ class UrlSubmitPanel(private val project: Project) : JPanel() {
             parentToolWindow.repaint()
         }
         println("Navigating to register page with URL: $url")
+    }
+
+
+    private fun returnToMainSidePanel() {
+        val parentToolWindow = SwingUtilities.getAncestorOfClass(JPanel::class.java, this)
+        if (parentToolWindow is JPanel) {
+            parentToolWindow.removeAll()
+            parentToolWindow.layout = BorderLayout()
+            parentToolWindow.add(SidebarToolWindow(project).content, BorderLayout.CENTER)
+            parentToolWindow.revalidate()
+            parentToolWindow.repaint()
+        }
+        println("Closed URL Submit Panel, returned to SidebarToolWindow.")
     }
 
     private fun showMessage(message: String, messageType: Int) {

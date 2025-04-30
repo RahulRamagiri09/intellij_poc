@@ -14,6 +14,7 @@ import java.util.Base64
 import javax.swing.JOptionPane
 import com.intellij.openapi.components.ServiceManager
 
+
 class LoginPanel(private val project: Project) : JPanel() {
     private val emailField = JTextField("rahul97@gmail.com", 20).apply {
         preferredSize = Dimension(200, 30)
@@ -86,6 +87,19 @@ class LoginPanel(private val project: Project) : JPanel() {
             add(registerButton)
         }
         add(registerPanel, constraints)
+
+        // Back Button
+        constraints.gridy = 6
+        val backButton = JButton("Back").apply {
+            preferredSize = Dimension(100, 30)
+            addActionListener {
+                returnToMainSidePanel()
+            }
+        }
+        val backPanel = JPanel(FlowLayout(FlowLayout.CENTER)).apply {
+            add(backButton)
+        }
+        add(backPanel, constraints)
     }
 
     // Function to display a message dialog
@@ -146,6 +160,17 @@ class LoginPanel(private val project: Project) : JPanel() {
 
     // Function to replace LoginPanel with SidebarToolWindow after login success
     private fun replacePanelWithSidebarToolWindow() {
+        val parentToolWindow = SwingUtilities.getAncestorOfClass(JPanel::class.java, this)
+        if (parentToolWindow is JPanel) {
+            parentToolWindow.removeAll()
+            parentToolWindow.layout = BorderLayout()
+            parentToolWindow.add(SidebarToolWindow(project), BorderLayout.CENTER)
+            parentToolWindow.revalidate()
+            parentToolWindow.repaint()
+        }
+    }
+
+    private fun returnToMainSidePanel() {
         val parentToolWindow = SwingUtilities.getAncestorOfClass(JPanel::class.java, this)
         if (parentToolWindow is JPanel) {
             parentToolWindow.removeAll()
