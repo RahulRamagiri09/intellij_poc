@@ -82,17 +82,21 @@ class RegisterPanel(private val project: Project) : JPanel() {
 
         // Login Section
         constraints.gridy = 13
-        val loginPanel = JPanel().apply {
-            layout = FlowLayout(FlowLayout.CENTER, 5, 0)
-            add(JLabel("Already have an account?"))
-            val loginButton = JButton("Login").apply {
-                preferredSize = Dimension(100, 30)
-                addActionListener {
-                    replacePanelWithLoginPanel()
-                }
+        val loginLabel = JLabel("Already have an account?")
+        val loginButton = JButton("Login").apply {
+            preferredSize = Dimension(100, 30)
+            maximumSize = Dimension(100, 30)
+            addActionListener {
+                replacePanelWithLoginPanel()
             }
-            add(loginButton)
         }
+
+        val loginPanel = JPanel()
+        loginPanel.layout = BoxLayout(loginPanel, BoxLayout.X_AXIS)
+        loginPanel.maximumSize = Dimension(Int.MAX_VALUE, 30)
+        loginPanel.add(loginLabel)
+        loginPanel.add(Box.createHorizontalStrut(10)) // spacing
+        loginPanel.add(loginButton)
         add(loginPanel, constraints)
 
         // Back Button Section

@@ -75,17 +75,19 @@ class LoginPanel(private val project: Project) : JPanel() {
 
         // Register Section
         constraints.gridy = 5
-        val registerPanel = JPanel().apply {
-            layout = FlowLayout(FlowLayout.CENTER, 5, 0) // Keep label and button in same line
-            add(JLabel("Don't have an account?"))
-            val registerButton = JButton("Register").apply {
-                preferredSize = Dimension(100, 30) // Reduce button width
-                addActionListener {
-                    replacePanelWithRegisterPanel()
-                }
-            }
-            add(registerButton)
+        val registerLabel = JLabel("Don't have an account?")
+        val registerButton = JButton("Register").apply {
+            preferredSize = Dimension(100, 30)
+            addActionListener { replacePanelWithRegisterPanel() }
         }
+
+       // Use BoxLayout to ensure side-by-side alignment
+        val registerPanel = JPanel()
+        registerPanel.layout = BoxLayout(registerPanel, BoxLayout.X_AXIS)
+        registerPanel.maximumSize = Dimension(Int.MAX_VALUE, 30) // Prevent shrinking below 1 line
+        registerPanel.add(registerLabel)
+        registerPanel.add(Box.createHorizontalStrut(10)) // spacing between label and button
+        registerPanel.add(registerButton)
         add(registerPanel, constraints)
 
         // Back Button
