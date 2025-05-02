@@ -37,7 +37,7 @@ object JsonExplainCode {
             val explanationData = jsonElement["explanation"]?.jsonArray?.map { explanation ->
                 val explanationObject = explanation.jsonObject
                 arrayOf(
-                    explanationObject["overview:"]?.jsonPrimitive?.content ?: "N/A",
+                    explanationObject["overview"]?.jsonPrimitive?.content ?: "N/A",
                     explanationObject["detailedExplanation"]?.jsonPrimitive?.content ?: "N/A"
                 )
             } ?: emptyList()

@@ -9,7 +9,7 @@ class PersistentState : PersistentStateComponent<PersistentState.State> {
 
     private var myState = State()
 
-    data class State(var storedUrl: String? = null, var authToken: String? = null)
+    data class State(var storedUrl: String? = null, var authToken: String? = null, var gitStoredUrl: String? = null)
 
     override fun getState(): State {
         return myState
@@ -35,9 +35,18 @@ class PersistentState : PersistentStateComponent<PersistentState.State> {
         myState.authToken = token
     }
 
+    fun getGitStoredUrl(): String? {
+        return myState.gitStoredUrl
+    }
+
+    fun setGitStoredUrl(url: String) {
+        myState.gitStoredUrl = url
+    }
+
     // Method to reset the stored URL and auth token
     fun resetState() {
         myState.storedUrl = null
         myState.authToken = null
+        myState.gitStoredUrl = null
     }
 }

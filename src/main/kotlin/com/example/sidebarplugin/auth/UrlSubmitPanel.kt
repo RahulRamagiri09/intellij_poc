@@ -17,6 +17,12 @@ class UrlSubmitPanel(private val project: Project) : JPanel() {
         preferredSize = Dimension(300, 30)
         maximumSize = Dimension(300, 30)
     }
+
+    private val gitkbUrlTextField = JTextField(20).apply {
+        preferredSize = Dimension(300, 30)
+        maximumSize = Dimension(300, 30)
+    }
+
     private val submitButton = JButton("Submit") // Submit button
     private val backButton = JButton("Back")
     private val urlState = ServiceManager.getService(PersistentState::class.java) // Global storage
@@ -61,6 +67,21 @@ class UrlSubmitPanel(private val project: Project) : JPanel() {
         inputPanel.add(urlTextField)
 
 
+        // gitKB
+        // Add GitKB label and field in init block (below instructionLabel)
+        val gitkbInstructionLabel = JLabel("Please enter the GitKB URL in the below field:")
+        gitkbInstructionLabel.alignmentX = Component.CENTER_ALIGNMENT
+        gitkbInstructionLabel.horizontalAlignment = SwingConstants.CENTER
+
+        val gitkbInputPanel = JPanel()
+        gitkbInputPanel.layout = BoxLayout(gitkbInputPanel, BoxLayout.Y_AXIS)
+        gitkbInputPanel.alignmentX = Component.CENTER_ALIGNMENT
+
+        gitkbUrlTextField.maximumSize = Dimension(300, 30)
+        gitkbUrlTextField.alignmentX = Component.CENTER_ALIGNMENT
+
+        gitkbInputPanel.add(Box.createVerticalStrut(5))
+        gitkbInputPanel.add(gitkbUrlTextField)
 
 
         // Submit and Back Button Panel
@@ -87,27 +108,64 @@ class UrlSubmitPanel(private val project: Project) : JPanel() {
         containerPanel.add(Box.createVerticalStrut(15))
         containerPanel.add(buttonPanel)
 
+        // Add these panels into containerPanel (just like urlTextField)
+        containerPanel.add(instructionLabel)
+        containerPanel.add(Box.createVerticalStrut(10))
+        containerPanel.add(inputPanel)
+        containerPanel.add(Box.createVerticalStrut(15))
+        containerPanel.add(gitkbInstructionLabel)
+        containerPanel.add(Box.createVerticalStrut(10))
+        containerPanel.add(gitkbInputPanel)
+        containerPanel.add(Box.createVerticalStrut(15))
+        containerPanel.add(buttonPanel)
+
+
         // Add the container panel to the main layout
         constraints.gridy = 0
         add(containerPanel, constraints)
 
         // Default URL Value
         urlTextField.text = "http://34.46.36.105:3000/genieapi"
+        gitkbUrlTextField.text = "http://34.46.36.105:3001/gitkbapi"
 
         // Button Action Listener
         submitButton.addActionListener {
             val url = urlTextField.text.trim()
-            if (url.isEmpty()) {
-                showMessage("Please enter a URL.", JOptionPane.WARNING_MESSAGE)
+            val gitkbUrl = gitkbUrlTextField.text.trim()
+            if (url.isEmpty()||url.isEmpty()) {
+                showMessage("Please enter a URL & GitKB.", JOptionPane.WARNING_MESSAGE)
             } else {
                 val touchUrl = "$url/touch"
                 println("Final URL to hit: $touchUrl")
-                submitTouchRequest(touchUrl, url)
+                submitTouchRequest(touchUrl, url, gitkbUrl)
             }
         }
     }
 
-    private fun submitTouchRequest(touchUrl: String, url: String) {
+//    private fun submitTouchRequest(touchUrl: String, url: String, gitKbUrl: String) {
+//        SwingUtilities.invokeLater {
+//            try {
+//                val connection = URL(touchUrl).openConnection() as HttpURLConnection
+//                connection.requestMethod = "GET"
+//                val responseCode = connection.responseCode
+//                println("Response Code: $responseCode")
+//                if (responseCode == HttpURLConnection.HTTP_OK) {
+//                    showCustomMessage("Url submitted successfully! Proceed to Login/Register....", url)
+//                    urlState.setStoredUrl(url) // Store the URL
+//                    println("Stored URL in UrlState: ${urlState.getStoredUrl()}") // Print stored URL
+//                } else {
+//                    val errorMessage = BufferedReader(InputStreamReader(connection.errorStream)).readText()
+//                    showMessage("Touch API failed: $errorMessage", JOptionPane.ERROR_MESSAGE)
+//                }
+//                connection.disconnect()
+//            } catch (e: Exception) {
+//                showMessage("An error occurred: ${e.message}", JOptionPane.ERROR_MESSAGE)
+//                e.printStackTrace()
+//            }
+//        }
+//    }
+
+    private fun submitTouchRequest(touchUrl: String, url: String, gitkbUrl: String) {
         SwingUtilities.invokeLater {
             try {
                 val connection = URL(touchUrl).openConnection() as HttpURLConnection
@@ -116,8 +174,10 @@ class UrlSubmitPanel(private val project: Project) : JPanel() {
                 println("Response Code: $responseCode")
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     showCustomMessage("Url submitted successfully! Proceed to Login/Register....", url)
-                    urlState.setStoredUrl(url) // Store the URL
-                    println("Stored URL in UrlState: ${urlState.getStoredUrl()}") // Print stored URL
+                    urlState.setStoredUrl(url)          // Store domain URL
+                    urlState.setGitStoredUrl(gitkbUrl)  // Store GitKB URL
+                    println("Stored URL in UrlState: ${urlState.getStoredUrl()}")
+                    println("Stored GitKB URL: ${urlState.getGitStoredUrl()}")
                 } else {
                     val errorMessage = BufferedReader(InputStreamReader(connection.errorStream)).readText()
                     showMessage("Touch API failed: $errorMessage", JOptionPane.ERROR_MESSAGE)
@@ -129,6 +189,7 @@ class UrlSubmitPanel(private val project: Project) : JPanel() {
             }
         }
     }
+
 
     private fun showCustomMessage(message: String, url: String) {
         val dialog = JDialog(SwingUtilities.getWindowAncestor(this), "Submit URL", Dialog.ModalityType.APPLICATION_MODAL)
