@@ -166,7 +166,8 @@
 package com.example.sidebarplugin
 
 import com.example.sidebarplugin.Assistant.AssistantItems
-import com.example.sidebarplugin.Assistant.GitKBItems
+import com.example.sidebarplugin.GitKB.GitKBItems
+import com.example.sidebarplugin.KB.KBItems
 import com.example.sidebarplugin.Review.ReviewItems
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
@@ -211,6 +212,10 @@ class SidebarToolWindow(private val project: Project) : SimpleToolWindowPanel(tr
         // GitKB dropdown
         val gitKBDropdown = DropdownMenuGitKB.createDropdownMenu("GitKB", GitKBItems.getItems(), project)
         dropdownPanel.add(CollapsibleSection("GitKB", gitKBDropdown))
+
+        // KB dropdown
+        val KBDropdown = DropdownMenuKB.createDropdownMenu("Knowledge Base", KBItems.getItems(), project)
+        dropdownPanel.add(CollapsibleSection("Knowledge Base", KBDropdown))
 
         mainPanel.add(JBScrollPane(dropdownPanel), BorderLayout.CENTER)
     }

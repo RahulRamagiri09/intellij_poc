@@ -1,4 +1,4 @@
-package com.example.sidebarplugin.Assistant
+package com.example.sidebarplugin.GitKB
 
 object GitKBItems {
     fun getItems(): List<String> {
