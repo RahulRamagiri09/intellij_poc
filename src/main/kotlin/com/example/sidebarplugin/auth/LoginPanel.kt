@@ -27,11 +27,29 @@ class LoginPanel(private val project: Project) : JPanel() {
     private val urlState = ServiceManager.getService(PersistentState::class.java) // Global storage
 
     init {
+        // Title Label
+        val titleLabel = JLabel("Login")
+        titleLabel.font = titleLabel.font.deriveFont(Font.BOLD, 18f)
+        titleLabel.alignmentX = Component.CENTER_ALIGNMENT
+        titleLabel.horizontalAlignment = SwingConstants.CENTER
+
+        val titlePanel = JPanel()
+        titlePanel.layout = BoxLayout(titlePanel, BoxLayout.Y_AXIS)
+        titlePanel.add(titleLabel)
+        titlePanel.add(Box.createVerticalStrut(15))
+
         layout = GridBagLayout()
         val constraints = GridBagConstraints().apply {
             insets = Insets(5, 5, 5, 5) // Reduce spacing
             fill = GridBagConstraints.HORIZONTAL
         }
+
+        // Add the title panel first
+        constraints.gridx = 0
+        constraints.gridy = 0
+        constraints.gridwidth = GridBagConstraints.REMAINDER
+        constraints.anchor = GridBagConstraints.CENTER
+        add(titlePanel, constraints)
 
         // Email Label
         constraints.gridx = 0
