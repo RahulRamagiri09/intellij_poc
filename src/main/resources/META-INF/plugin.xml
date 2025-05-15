@@ -12,6 +12,14 @@
                     factoryClass="com.example.sidebarplugin.SidebarToolWindowFactory"
                     icon="/icons/Genie-lamp.svg"
         />
+
+        <toolWindow
+                id="Response"
+                anchor="right"
+                factoryClass="com.example.sidebarplugin.ui.AssistantToolWindowFactory"
+                icon="/icons/Genie-lamp.svg"
+        />
+
         <applicationService serviceImplementation="com.example.sidebarplugin.storage.PersistentState"/>
     </extensions>
 

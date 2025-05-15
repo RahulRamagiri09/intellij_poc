@@ -53,28 +53,28 @@ class LoginPanel(private val project: Project) : JPanel() {
 
         // Email Label
         constraints.gridx = 0
-        constraints.gridy = 0
+        constraints.gridy = 1
         constraints.anchor = GridBagConstraints.WEST
         add(JLabel("Email:"), constraints)
 
         // Email Field
         constraints.gridx = 0
-        constraints.gridy = 1
+        constraints.gridy = 2
         add(emailField, constraints)
 
         // Password Label
         constraints.gridx = 0
-        constraints.gridy = 2
+        constraints.gridy = 3
         add(JLabel("Password:"), constraints)
 
         // Password Field
         constraints.gridx = 0
-        constraints.gridy = 3
+        constraints.gridy = 4
         add(passwordField, constraints)
 
         // Submit Button
         constraints.gridx = 0
-        constraints.gridy = 4
+        constraints.gridy = 5
         constraints.gridwidth = 1
         constraints.anchor = GridBagConstraints.CENTER
         val submitButton = JButton("Submit").apply {
@@ -92,7 +92,7 @@ class LoginPanel(private val project: Project) : JPanel() {
         add(submitButton, constraints)
 
         // Register Section
-        constraints.gridy = 5
+        constraints.gridy = 6
         val registerLabel = JLabel("Don't have an account?")
         val registerButton = JButton("Register").apply {
             preferredSize = Dimension(100, 30)
@@ -109,7 +109,7 @@ class LoginPanel(private val project: Project) : JPanel() {
         add(registerPanel, constraints)
 
         // Back Button
-        constraints.gridy = 6
+        constraints.gridy = 7
         val backButton = JButton("Back").apply {
             preferredSize = Dimension(100, 30)
             addActionListener {

@@ -84,11 +84,29 @@ object AssistantActions {
 
                     SwingUtilities.invokeLater {
                         loadingDialog.dispose()
+                        //old code
+//                        when (processedContent) {
+//                            is JPanel -> UIUtils.showResponsePanel(project, editor, processedContent) // Show JPanel for "Explain Code"
+//                            is String -> UIUtils.showResponseDialog(project, editor, processedContent, selectedText) // Show JTextArea for others
+//                            else -> JOptionPane.showMessageDialog(null, "Unexpected response type.", "Error", JOptionPane.ERROR_MESSAGE)
+//                        }
+
                         when (processedContent) {
-                            is JPanel -> UIUtils.showResponsePanel(project, editor, processedContent) // Show JPanel for "Explain Code"
-                            is String -> UIUtils.showResponseDialog(project, editor, processedContent, selectedText) // Show JTextArea for others
-                            else -> JOptionPane.showMessageDialog(null, "Unexpected response type.", "Error", JOptionPane.ERROR_MESSAGE)
+                            is JPanel -> {
+                                // Existing logic for JPanel responses
+                                UIUtils.showResponsePanel(project, editor, processedContent)
+                            }
+
+                            is String -> {
+                                // Open response in right sidebar tool window with accept/reject buttons
+                                UIUtils.showSidebarResponse(project, editor, processedContent)
+                            }
+
+                            else -> {
+                                JOptionPane.showMessageDialog(null, "Unexpected response type.", "Error", JOptionPane.ERROR_MESSAGE)
+                            }
                         }
+
                     }
                 } catch (e: Exception) {
                     SwingUtilities.invokeLater {
