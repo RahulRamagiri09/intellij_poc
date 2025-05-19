@@ -16,7 +16,7 @@
         <toolWindow
                 id="Response"
                 anchor="right"
-                factoryClass="com.example.sidebarplugin.ui.AssistantToolWindowFactory"
+                factoryClass="com.example.sidebarplugin.ui.SidebarRightToolWindowFactory"
                 icon="/icons/Genie-lamp.svg"
         />
 

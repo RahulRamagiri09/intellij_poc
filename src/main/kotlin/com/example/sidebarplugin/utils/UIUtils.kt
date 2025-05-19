@@ -144,7 +144,7 @@ import javax.swing.*
 import java.awt.BorderLayout
 import java.awt.FlowLayout
 import com.intellij.openapi.ui.DialogWrapper
-import com.example.sidebarplugin.ui.AssistantToolWindow
+import com.example.sidebarplugin.ui.SidebarRightToolWindow
 
 object UIUtils {
     fun showLoadingDialog(onCancel: () -> Unit): JDialog {
@@ -253,7 +253,7 @@ object UIUtils {
         if (editor == null) return
         val selectedText = editor.selectionModel.selectedText ?: return
 
-        AssistantToolWindow.showInSidebar(
+        SidebarRightToolWindow.showInSidebar(
             project,
             newText,
             onAccept = {

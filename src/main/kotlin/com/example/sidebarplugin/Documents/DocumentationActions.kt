@@ -1,6 +1,6 @@
 package com.example.sidebarplugin.Documents
 
-import com.example.sidebarplugin.ui.AssistantToolWindow
+import com.example.sidebarplugin.ui.SidebarRightToolWindow
 import com.example.sidebarplugin.ui.createRepoDocumentationUI
 import com.intellij.openapi.project.Project
 
@@ -18,7 +18,7 @@ object DocumentationActions {
                     .getToolWindow("Response")
 
                 if (toolWindow != null) {
-                    val toolWindowUI = AssistantToolWindow(project, toolWindow)
+                    val toolWindowUI = SidebarRightToolWindow(project, toolWindow)
                     toolWindowUI.updateContent(panel)
                 }
             }

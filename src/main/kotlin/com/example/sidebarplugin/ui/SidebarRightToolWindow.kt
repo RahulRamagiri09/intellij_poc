@@ -11,7 +11,7 @@ import javax.swing.border.EmptyBorder
 import java.awt.FlowLayout
 
 
-class AssistantToolWindow(private val project: Project, private val toolWindow: ToolWindow) {
+class SidebarRightToolWindow(private val project: Project, private val toolWindow: ToolWindow) {
     private val contentFactory = ContentFactory.getInstance()
     private val contentPanel = JPanel(BorderLayout())
 
@@ -56,7 +56,7 @@ class AssistantToolWindow(private val project: Project, private val toolWindow: 
     companion object {
         fun showInSidebar(project: Project, contentText: String, onAccept: () -> Unit, onReject: () -> Unit) {
             val toolWindow = ToolWindowManager.getInstance(project).getToolWindow("Response") ?: return
-            val toolWindowUI = AssistantToolWindow(project, toolWindow)
+            val toolWindowUI = SidebarRightToolWindow(project, toolWindow)
 
             val panel = JPanel(BorderLayout(0, 10)).apply {
                 border = EmptyBorder(10, 10, 10, 10)
