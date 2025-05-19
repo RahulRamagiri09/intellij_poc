@@ -5,7 +5,7 @@ import com.intellij.ui.components.JBList
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
-import com.example.sidebarplugin.Documents.DocumentationResponse.DocumentationActions
+import com.example.sidebarplugin.Documents.DocumentationActions
 
 
 class DropDownMenuDocumentation {

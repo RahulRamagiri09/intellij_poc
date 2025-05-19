@@ -1,4 +1,4 @@
-package com.example.sidebarplugin.Documents.DocumentationResponse
+package com.example.sidebarplugin.Documents
 
 class DocumentationItems {
     companion object {

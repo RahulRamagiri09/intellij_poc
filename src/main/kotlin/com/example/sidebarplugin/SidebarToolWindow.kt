@@ -166,7 +166,7 @@
 package com.example.sidebarplugin
 
 import com.example.sidebarplugin.Assistant.AssistantItems
-import com.example.sidebarplugin.Documents.DocumentationResponse.DocumentationItems
+import com.example.sidebarplugin.Documents.DocumentationItems
 import com.example.sidebarplugin.GitKB.GitKBItems
 import com.example.sidebarplugin.KB.KBItems
 import com.example.sidebarplugin.Review.ReviewItems

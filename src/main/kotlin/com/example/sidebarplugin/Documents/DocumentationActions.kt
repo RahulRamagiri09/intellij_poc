@@ -1,4 +1,4 @@
-package com.example.sidebarplugin.Documents.DocumentationResponse
+package com.example.sidebarplugin.Documents
 
 import com.example.sidebarplugin.ui.AssistantToolWindow
 import com.example.sidebarplugin.ui.createRepoDocumentationUI
