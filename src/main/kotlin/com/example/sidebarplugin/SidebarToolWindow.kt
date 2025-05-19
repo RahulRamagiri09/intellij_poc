@@ -166,6 +166,7 @@
 package com.example.sidebarplugin
 
 import com.example.sidebarplugin.Assistant.AssistantItems
+import com.example.sidebarplugin.Documents.DocumentationResponse.DocumentationItems
 import com.example.sidebarplugin.GitKB.GitKBItems
 import com.example.sidebarplugin.KB.KBItems
 import com.example.sidebarplugin.Review.ReviewItems
@@ -208,6 +209,10 @@ class SidebarToolWindow(private val project: Project) : SimpleToolWindowPanel(tr
         // Review dropdown
         val reviewDropdown = DropDownMenuReview.createDropdownMenu("Review", ReviewItems.getItems(), project)
         dropdownPanel.add(CollapsibleSection("Review", reviewDropdown))
+
+        // Documentation dropdown
+        val documentationDropdown = DropDownMenuDocumentation.createDropdownMenu("Documentation", DocumentationItems.getItems(), project)
+        dropdownPanel.add(CollapsibleSection("Documentation", documentationDropdown))
 
         // GitKB dropdown
         val gitKBDropdown = DropdownMenuGitKB.createDropdownMenu("GitKB", GitKBItems.getItems(), project)
