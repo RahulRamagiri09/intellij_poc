@@ -3,9 +3,14 @@ package com.example.sidebarplugin.Documents
 import com.example.sidebarplugin.ui.SidebarRightToolWindow
 import com.example.sidebarplugin.ui.createRepoDocumentationUI
 import com.intellij.openapi.project.Project
+import com.example.sidebarplugin.storage.PersistentState
 
 object DocumentationActions {
+
+
     fun handleDocumentationRequest(project: Project, item: String) {
+
+
         when (item) {
             "Repo Documentation" -> {
                 val panel = createRepoDocumentationUI(
@@ -28,3 +33,6 @@ object DocumentationActions {
         }
     }
 }
+
+
+
