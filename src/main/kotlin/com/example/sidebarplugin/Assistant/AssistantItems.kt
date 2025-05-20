@@ -11,7 +11,7 @@ object AssistantItems {
             "Explain Code",
             "Refactor Code",
             "Unit Test Code",
-//            "Filewise Unit Test Code"
+          "Filewise Unit Test Code"
         )
     }
 }
