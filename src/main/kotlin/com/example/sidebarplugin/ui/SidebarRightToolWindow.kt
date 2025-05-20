@@ -9,6 +9,8 @@ import java.awt.GridBagLayout
 import javax.swing.*
 import javax.swing.border.EmptyBorder
 import java.awt.FlowLayout
+import java.awt.Insets
+
 
 
 class SidebarRightToolWindow(private val project: Project, private val toolWindow: ToolWindow) {
@@ -66,6 +68,7 @@ class SidebarRightToolWindow(private val project: Project, private val toolWindo
                 isEditable = false
                 lineWrap = true
                 wrapStyleWord = true
+                margin = Insets(10, 10, 10, 10)
             }
 
             panel.add(JScrollPane(textArea), BorderLayout.CENTER)

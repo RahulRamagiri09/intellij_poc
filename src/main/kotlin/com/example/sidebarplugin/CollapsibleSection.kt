@@ -29,43 +29,6 @@
 //    }
 //}
 
-//arrow open close symbol
-package com.example.sidebarplugin
-
-import java.awt.*
-import javax.swing.*
-import javax.swing.border.EmptyBorder
-
-class CollapsibleSection(title: String, content: JComponent) : JPanel(BorderLayout()) {
-    private val toggleButton = JButton("▶ $title")
-    private var isExpanded = false
-    private val contentPanel = JPanel(BorderLayout())
-
-    init {
-        border = EmptyBorder(5, 5, 5, 5)
-        toggleButton.horizontalAlignment = SwingConstants.LEFT
-        toggleButton.isFocusPainted = false
-        toggleButton.background = UIManager.getColor("Panel.background")
-        toggleButton.border = BorderFactory.createEmptyBorder()
-        toggleButton.addActionListener {
-            toggle()
-        }
-
-        contentPanel.add(content, BorderLayout.CENTER)
-        contentPanel.isVisible = false
-
-        add(toggleButton, BorderLayout.NORTH)
-        add(contentPanel, BorderLayout.CENTER)
-    }
-
-    private fun toggle() {
-        isExpanded = !isExpanded
-        toggleButton.text = if (isExpanded) "▼ ${toggleButton.text.substring(2)}" else "▶ ${toggleButton.text.substring(2)}"
-        contentPanel.isVisible = isExpanded
-        revalidate()
-        repaint()
-    }
-}
 
 // box and arrow open
 //package com.example.sidebarplugin
@@ -108,3 +71,51 @@ class CollapsibleSection(title: String, content: JComponent) : JPanel(BorderLayo
 //        repaint()
 //    }
 //}
+
+
+
+package com.example.sidebarplugin
+
+import java.awt.*
+import javax.swing.*
+import javax.swing.border.EmptyBorder
+
+class CollapsibleSection(title: String, content: JComponent) : JPanel(BorderLayout()) {
+    private val toggleButton = JButton("▶ $title")
+    private var isExpanded = false
+    private val contentPanel = JPanel(BorderLayout())
+
+    init {
+        border = EmptyBorder(0, 5, 0, 5)
+        toggleButton.horizontalAlignment = SwingConstants.LEFT
+        toggleButton.isFocusPainted = false
+        toggleButton.background = UIManager.getColor("Panel.background")
+        toggleButton.border = BorderFactory.createEmptyBorder()
+        toggleButton.addActionListener {
+            toggle()
+        }
+
+        contentPanel.add(content, BorderLayout.CENTER)
+        contentPanel.isVisible = false
+
+        add(toggleButton, BorderLayout.NORTH)
+        add(contentPanel, BorderLayout.CENTER)
+    }
+
+    private fun toggle() {
+        isExpanded = !isExpanded
+        toggleButton.text = if (isExpanded) "▼ ${toggleButton.text.substring(2)}" else "▶ ${toggleButton.text.substring(2)}"
+        contentPanel.isVisible = isExpanded
+        revalidate()
+        repaint()
+    }
+}
+
+
+
+
+
+
+
+
+
