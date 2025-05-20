@@ -48,6 +48,8 @@ dependencies {
     implementation("io.ktor:ktor-client-serialization:2.1.3")
     implementation("io.ktor:ktor-client-content-negotiation:2.1.3")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.1.3")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("org.json:json:20231013")
 }
 
 
