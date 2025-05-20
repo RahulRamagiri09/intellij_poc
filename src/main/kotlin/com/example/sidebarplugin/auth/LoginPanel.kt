@@ -16,11 +16,13 @@ import com.intellij.openapi.components.ServiceManager
 
 
 class LoginPanel(private val project: Project) : JPanel() {
-    private val emailField = JTextField("rahul97@gmail.com", 20).apply {
+//    private val emailField = JTextField("rahul97@gmail.com", 20).apply {
+private val emailField = JTextField(20).apply {
         preferredSize = Dimension(200, 30)
         maximumSize = Dimension(200, 30)
     }
-    private val passwordField = JPasswordField("Test@123", 20).apply {
+//    private val passwordField = JPasswordField("Test@123", 20).apply {
+private val passwordField = JPasswordField(20).apply {
         preferredSize = Dimension(200, 30)
         maximumSize = Dimension(200, 30)
     }

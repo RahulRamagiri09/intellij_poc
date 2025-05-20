@@ -149,7 +149,8 @@ class UrlSubmitPanel(private val project: Project) : JPanel() {
         // Default URL Value
         urlTextField.text = "http://34.46.36.105:3000/genieapi"
         gitkbUrlTextField.text = "http://34.46.36.105:3001/gitkbapi"
-        kbUrlTextField.text = "http://34.60.74.140/kbmsapi"
+//        kbUrlTextField.text = "http://34.60.74.140/kbmsapi"
+        kbUrlTextField.text = "http://34.58.68.131/kbmsapi"
 
         // Button Action Listener
         submitButton.addActionListener {
