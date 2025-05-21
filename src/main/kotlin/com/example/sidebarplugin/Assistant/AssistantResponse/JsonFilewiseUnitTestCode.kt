@@ -43,40 +43,48 @@ object JsonFilewiseUnitTestCode {
         return response
     }
 
-    fun pollForResults(
-        statusUrl: String,
-        jobId: String,
-        authToken: String,
-        maxRetries: Int = 20,
-        delayMillis: Long = 10_000
-    ): String {
-        println("Starting pollForResults() with JobID: $jobId")
+fun pollForResults(
+    statusUrl: String,
+    jobId: String,
+    authToken: String,
+    maxRetries: Int = 20,
+    delayMillis: Long = 10_000,
+    isCancelled: () -> Boolean = { false }
+): String {
+    println("Starting pollForResults() with JobID: $jobId")
 
-        repeat(maxRetries) { attempt ->
-            println("Polling attempt ${attempt + 1}/$maxRetries...")
-            try {
-                val jsonBody = JsonObject(mapOf("JobID" to JsonPrimitive(jobId))).toString()
-                val response = httpPostJson(statusUrl, jsonBody, authToken)
+    repeat(maxRetries) { attempt ->
+        println("Polling attempt ${attempt + 1}/$maxRetries...")
 
-                val json = Json.parseToJsonElement(response).jsonObject
-                val status = json["status"]?.jsonPrimitive?.content ?: "UNKNOWN"
-                println("Status: $status")
-
-                if (status.equals("COMPLETED", ignoreCase = true)) {
-                    val results = json["results"]?.toString() ?: "No results found."
-                    println("Job completed. Returning results.")
-                    return results
-                }
-            } catch (e: Exception) {
-                println("Polling error: ${e.message}")
-            }
-
-            Thread.sleep(delayMillis)
+        if (isCancelled()) {
+            println("Polling cancelled by user.")
+            return "Cancelled"
         }
 
-        println("Timeout reached. Job did not complete.")
-        return "Timeout: Job did not complete in time."
+        try {
+            val jsonBody = JsonObject(mapOf("JobID" to JsonPrimitive(jobId))).toString()
+            val response = httpPostJson(statusUrl, jsonBody, authToken)
+
+            val json = Json.parseToJsonElement(response).jsonObject
+            val status = json["status"]?.jsonPrimitive?.content ?: "UNKNOWN"
+            println("Status: $status")
+
+            if (status.equals("COMPLETED", ignoreCase = true)) {
+                val results = json["results"]?.toString() ?: "No results found."
+                println("Job completed. Returning results.")
+                return results
+            }
+        } catch (e: Exception) {
+            println("Polling error: ${e.message}")
+        }
+
+        Thread.sleep(delayMillis)
     }
+
+    println("Timeout reached. Job did not complete.")
+    return "Timeout: Job did not complete in time."
+}
+
 
     fun renderResultsPanel(resultsJson: String): JPanel {
         val mainPanel = JPanel()
@@ -102,8 +110,6 @@ object JsonFilewiseUnitTestCode {
                     }
                 } ?: "No Data"
 
-
-
                 val testcase = testObj["testcase"]?.jsonPrimitive?.content ?: "No Test Case"
 
                 val card = JPanel()
@@ -114,12 +120,11 @@ object JsonFilewiseUnitTestCode {
                 val descLabel = JLabel("<html><b style='color:#ffffff'>Description:</b> <span style='color:#cccccc'>$description</span></html>")
                 descLabel.alignmentX = Component.LEFT_ALIGNMENT
                 descLabel.horizontalAlignment = SwingConstants.LEFT
-                descLabel.border = BorderFactory.createEmptyBorder(0, 0, 0, 0) // Remove any extra space
-                descLabel.setAlignmentX(Component.LEFT_ALIGNMENT) // Explicitly align it left
-                descLabel.setOpaque(true) // Ensure proper rendering
-                descLabel.background = Color(0x2D2D30) // Match the panel background
+                descLabel.border = BorderFactory.createEmptyBorder(0, 0, 0, 0) // Remove extra space
+                descLabel.setAlignmentX(Component.LEFT_ALIGNMENT) // Explicitly align left
+                descLabel.isOpaque = true // Ensure proper rendering
+                descLabel.background = Color(0x2D2D30) // Match panel background
                 card.add(descLabel)
-
 
                 val dataArea = JTextArea(data)
                 dataArea.isEditable = false
@@ -150,9 +155,7 @@ object JsonFilewiseUnitTestCode {
                 card.add(Box.createVerticalStrut(15))
 
                 mainPanel.add(card)
-//                mainPanel.add(Box.createVerticalStrut(10))
                 mainPanel.add(Box.createVerticalStrut(2))
-
             }
         } catch (e: Exception) {
             val errorLabel = JLabel("Error parsing test cases: ${e.message}")
@@ -170,4 +173,3 @@ object JsonFilewiseUnitTestCode {
         return wrapperPanel
     }
 }
-
