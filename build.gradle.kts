@@ -50,6 +50,8 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.1.3")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("org.json:json:20231013")
+    implementation("com.github.librepdf:openpdf:1.3.30")
+    implementation("com.itextpdf:itextpdf:5.5.13.3")
 }
 
 

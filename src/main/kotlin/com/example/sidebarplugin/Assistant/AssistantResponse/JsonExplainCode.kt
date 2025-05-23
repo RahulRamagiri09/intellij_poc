@@ -1,192 +1,24 @@
-//package com.example.sidebarplugin.Assistant.AssistantResponse
-//
-//import com.intellij.ui.components.JBScrollPane
-//import com.intellij.ui.table.JBTable
-//import kotlinx.serialization.json.*
-//import javax.swing.*
-//import javax.swing.table.DefaultTableModel
-//import java.awt.*
-//import javax.swing.table.TableCellRenderer
-//
-//object JsonExplainCode {
-//    fun extractExplainCode(response: String): JPanel {
-//        println("Raw API Response (JsonExplainCode): $response") // Debugging log
-//
-//        if (!response.trim().startsWith("{")) { // Check if response is valid JSON
-//            return errorPanel("Error: Response is not valid JSON")
-//        }
-//
-//        return try {
-//            val jsonElement = Json.parseToJsonElement(response).jsonObject
-//            val panel = JPanel()
-//            panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS) // Set vertical layout for sections background
-//
-//            // **Summary Section**
-//            panel.add(createSectionLabel("Summary:"))
-//            val summaryData = listOf(
-//                arrayOf(
-//                    jsonElement["quality"]?.jsonPrimitive?.content ?: "N/A",
-//                    jsonElement["remarks"]?.jsonPrimitive?.content ?: "N/A"
-//                )
-//            )
-//            panel.add(JBScrollPane(createTable(arrayOf("Quality", "Remarks"), summaryData)))
-//
-//            // **Explanation Section**
-//            panel.add(Box.createVerticalStrut(20))
-//            panel.add(createSectionLabel("Explanation:"))
-//            val explanationData = jsonElement["explanation"]?.jsonArray?.map { explanation ->
-//                val explanationObject = explanation.jsonObject
-//                arrayOf(
-//                    explanationObject["overview"]?.jsonPrimitive?.content ?: "N/A",
-//                    explanationObject["detailedExplanation"]?.jsonPrimitive?.content ?: "N/A"
-//                )
-//            } ?: emptyList()
-//            panel.add(JBScrollPane(createTable(arrayOf("Overview", "Detailed Explanation"), explanationData)))
-//
-//            // **Key Components Section**
-//            panel.add(Box.createVerticalStrut(20))
-//            panel.add(createSectionLabel("Key Components:"))
-//            val keyComponentsData = jsonElement["explanation"]?.jsonArray?.flatMap { explanation ->
-//                explanation.jsonObject["keyComponents"]?.jsonArray?.map { component ->
-//                    val compObj = component.jsonObject
-//                    arrayOf(
-//                        compObj["name"]?.jsonPrimitive?.content ?: "N/A",
-//                        compObj["description"]?.jsonPrimitive?.content ?: "N/A"
-//                    )
-//                } ?: emptyList()
-//            } ?: emptyList()
-//            panel.add(JBScrollPane(createTable(arrayOf("Name", "Description"), keyComponentsData)))
-//
-//            // **Logic Flow Section**
-//            panel.add(Box.createVerticalStrut(20))
-//            panel.add(createSectionLabel("Logic Flow:"))
-//            val logicFlowData = jsonElement["explanation"]?.jsonArray?.flatMap { explanation ->
-//                explanation.jsonObject["logicFlow"]?.jsonArray?.map { step ->
-//                    val stepObj = step.jsonObject
-//                    arrayOf(
-//                        stepObj["step"]?.jsonPrimitive?.content ?: "N/A",
-//                        stepObj["purpose"]?.jsonPrimitive?.content ?: "N/A"
-//                    )
-//                } ?: emptyList()
-//            } ?: emptyList()
-//            panel.add(JBScrollPane(createTable(arrayOf("Step", "Purpose"), logicFlowData)))
-//
-//            // **Algorithms Section**
-//            panel.add(Box.createVerticalStrut(20))
-//            panel.add(createSectionLabel("Algorithms:"))
-//            val algorithmsData = jsonElement["explanation"]?.jsonArray?.flatMap { explanation ->
-//                explanation.jsonObject["algorithms"]?.jsonArray?.map { algo ->
-//                    val algoObj = algo.jsonObject
-//                    arrayOf(
-//                        algoObj["name"]?.jsonPrimitive?.content ?: "N/A",
-//                        algoObj["description"]?.jsonPrimitive?.content ?: "N/A"
-//                    )
-//                } ?: emptyList()
-//            } ?: emptyList()
-//            panel.add(JBScrollPane(createTable(arrayOf("Name", "Description"), algorithmsData)))
-//
-//            // Wrap the entire panel in an outer scrollable pane
-//            val outerScrollPane = JBScrollPane(panel).apply {
-//                verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
-//                horizontalScrollBarPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
-////                background = Color.WHITE
-//            }
-//
-//            return JPanel(BorderLayout()).apply {
-//                add(outerScrollPane, BorderLayout.CENTER)
-////                background = Color.WHITE
-////                preferredSize = Dimension(900, 900)
-//                preferredSize = Dimension(1200, 600)
-//            }
-//
-//        } catch (e: Exception) {
-//            errorPanel("Invalid JSON response: ${e.message}")
-//        }
-//    }
-//
-//    private fun createTable(columnNames: Array<String>, data: List<Array<String>>): JBTable {
-//        val model = DefaultTableModel(columnNames, 0)
-//        data.forEach { model.addRow(it) }
-//
-//        val table = JBTable(model)
-//        val renderer = MultiLineTableCellRenderer()
-//
-//        // Set Custom Renderer for Multi-Line Support
-//        for (i in 0 until table.columnCount) {
-//            table.columnModel.getColumn(i).cellRenderer = renderer
-//        }
-//
-//        // Set bold header renderer with custom background color
-//        val headerFont = Font("Arial", Font.BOLD, 14)
-//        val headerRenderer = object : JLabel(), TableCellRenderer {
-//            init {
-//                font = headerFont
-//                horizontalAlignment = JLabel.CENTER
-//                isOpaque = true
-//                background = Color(0x07, 0x43, 0x9C) // Custom color #07439C
-//                foreground = Color.WHITE // White text for contrast
-//            }
-//
-//            override fun getTableCellRendererComponent(
-//                table: JTable, value: Any?, isSelected: Boolean, hasFocus: Boolean, row: Int, column: Int
-//            ): Component {
-//                text = value?.toString() ?: ""
-//                return this
-//            }
-//        }
-//
-//        table.tableHeader.defaultRenderer = headerRenderer
-//        table.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
-//        table.rowHeight = 150 // Fixed height for all rows
-//
-//        return table
-//    }
-//
-//    // **Utility Method: Error Panel**
-//    private fun errorPanel(message: String): JPanel {
-//        val panel = JPanel(BorderLayout())
-//        panel.add(JBScrollPane(JTable(arrayOf(arrayOf(message)), arrayOf("Error"))))
-//        panel.preferredSize = Dimension(800, 200) // **Set medium size for error panel**
-////        panel.preferredSize = Dimension(1200, 600)
-//        return panel
-//    }
-//
-//    // **Helper Method: Create Section Title Label**
-//    private fun createSectionLabel(title: String): JLabel {
-//        val label = JLabel(title)
-//        label.font = Font("Arial", Font.BOLD, 16 )
-//        return label
-//    }
-//}
-//
-////// **Custom Cell Renderer for Multi-Line Text**
-//class MultiLineTableCellRenderer : JTextArea(), TableCellRenderer {
-//    init {
-//        lineWrap = true
-//        wrapStyleWord = true
-//        isOpaque = true
-//    }
-//
-//    override fun getTableCellRendererComponent(
-//        table: JTable,
-//        value: Any?,
-//        isSelected: Boolean,
-//        hasFocus: Boolean,
-//        row: Int,
-//        column: Int
-//    ): Component {
-//        text = value?.toString() ?: ""
-//        return this
-//    }
-//}
-
-
 package com.example.sidebarplugin.Assistant.AssistantResponse
 
 import com.intellij.ui.components.JBScrollPane
 import kotlinx.serialization.json.*
+import com.itextpdf.text.*
+import com.itextpdf.text.pdf.PdfWriter
 import java.awt.*
+import java.io.FileOutputStream
 import javax.swing.*
+import com.itextpdf.text.Font
+import java.io.File
+
+import com.itextpdf.text.Document
+import com.itextpdf.text.Chunk
+import com.itextpdf.text.Paragraph
+import com.itextpdf.text.Phrase
+import com.itextpdf.text.Element
+import com.itextpdf.text.pdf.PdfPTable
+import com.itextpdf.text.pdf.PdfPCell
+
+
 
 object JsonExplainCode {
     fun extractExplainCode(response: String): JPanel {
@@ -198,49 +30,31 @@ object JsonExplainCode {
 
         return try {
             val jsonElement = Json.parseToJsonElement(response).jsonObject
-            val mainPanel = JPanel()
-            mainPanel.layout = BoxLayout(mainPanel, BoxLayout.Y_AXIS)
-            mainPanel.background = DARK_BG
+            val mainPanel = JPanel().apply {
+                layout = BoxLayout(this, BoxLayout.Y_AXIS)
+                background = DARK_BG
+            }
 
             // ======= Summary Section =======
             mainPanel.add(createSectionLabel("Summary"))
-
             val qualityArray = extractArray(jsonElement["quality"])
-            qualityArray.forEach {
-                mainPanel.add(createCard("Quality", it))
-                mainPanel.add(Box.createVerticalStrut(10))
-            }
+            qualityArray.forEach { mainPanel.add(createCard("Quality", it)) }
 
             val remarksArray = extractArray(jsonElement["remarks"])
-            remarksArray.forEach {
-                mainPanel.add(createCard("Remarks", it))
-                mainPanel.add(Box.createVerticalStrut(10))
-            }
+            remarksArray.forEach { mainPanel.add(createCard("Remarks", it)) }
 
             // ======= Explanation Section =======
             mainPanel.add(Box.createVerticalStrut(20))
             mainPanel.add(createSectionLabel("Explanation"))
 
             val explanationArray = jsonElement["explanation"]?.jsonArray ?: JsonArray(emptyList())
-            for (item in explanationArray) {
+            explanationArray.forEach { item ->
                 val obj = item.jsonObject
-                val overview = obj["overview"]?.jsonPrimitive?.content ?: "N/A"
-                val detailed = obj["detailedExplanation"]?.jsonPrimitive?.content ?: "N/A"
-
-                val card = JPanel()
-                card.layout = BoxLayout(card, BoxLayout.Y_AXIS)
-                card.border = BorderFactory.createLineBorder(LIGHT_TEXT)
-                card.background = DARK_PANEL
-
-                card.add(createLabeledTextArea("Overview", overview))
-                card.add(Box.createVerticalStrut(10))
-                card.add(createLabeledTextArea("Detailed Explanation", detailed, height = 200))
-
-                mainPanel.add(card)
-                mainPanel.add(Box.createVerticalStrut(15))
+                mainPanel.add(createCard("Overview", obj["overview"]?.jsonPrimitive?.content ?: "N/A"))
+                mainPanel.add(createCard("Detailed Explanation", obj["detailedExplanation"]?.jsonPrimitive?.content ?: "N/A"))
             }
 
-             //======= Key Components Section =======
+            // ======= Key Components Section =======
             mainPanel.add(Box.createVerticalStrut(20))
             mainPanel.add(createSectionLabel("Key Components"))
 
@@ -255,17 +69,8 @@ object JsonExplainCode {
             }
 
             keyComponentsData.forEach { (name, description) ->
-                val card = JPanel()
-                card.layout = BoxLayout(card, BoxLayout.Y_AXIS)
-                card.border = BorderFactory.createLineBorder(LIGHT_TEXT)
-                card.background = DARK_PANEL
-
-                card.add(createLabeledTextArea("Name", name))
-                card.add(Box.createVerticalStrut(10))
-                card.add(createLabeledTextArea("Description", description))
-
-                mainPanel.add(card)
-                mainPanel.add(Box.createVerticalStrut(15))
+                mainPanel.add(createCard("Name", name))
+                mainPanel.add(createCard("Description", description))
             }
 
             // ======= Logic Flow Section =======
@@ -283,17 +88,8 @@ object JsonExplainCode {
             }
 
             logicFlowData.forEach { (step, purpose) ->
-                val card = JPanel()
-                card.layout = BoxLayout(card, BoxLayout.Y_AXIS)
-                card.border = BorderFactory.createLineBorder(LIGHT_TEXT)
-                card.background = DARK_PANEL
-
-                card.add(createLabeledTextArea("Step", step))
-                card.add(Box.createVerticalStrut(10))
-                card.add(createLabeledTextArea("Purpose", purpose))
-
-                mainPanel.add(card)
-                mainPanel.add(Box.createVerticalStrut(15))
+                mainPanel.add(createCard("Step", step))
+                mainPanel.add(createCard("Purpose", purpose))
             }
 
             // ======= Algorithms Section =======
@@ -311,18 +107,28 @@ object JsonExplainCode {
             }
 
             algorithmsData.forEach { (name, description) ->
-                val card = JPanel()
-                card.layout = BoxLayout(card, BoxLayout.Y_AXIS)
-                card.border = BorderFactory.createLineBorder(LIGHT_TEXT)
-                card.background = DARK_PANEL
-
-                card.add(createLabeledTextArea("Algorithm", name))
-                card.add(Box.createVerticalStrut(10))
-                card.add(createLabeledTextArea("Description", description))
-
-                mainPanel.add(card)
-                mainPanel.add(Box.createVerticalStrut(15))
+                mainPanel.add(createCard("Algorithm", name))
+                mainPanel.add(createCard("Description", description))
             }
+
+            // ======= Download PDF Button =======
+            val buttonPanel = JPanel().apply {
+                layout = FlowLayout(FlowLayout.CENTER)
+                background = DARK_BG
+            }
+
+            val downloadButton = JButton("Download as PDF").apply {
+                font = java.awt.Font("Arial", java.awt.Font.BOLD, 14)
+                background = Color(100, 150, 200)
+                foreground = Color.WHITE
+                addActionListener {
+                    saveAsPdf(response)
+                }
+            }
+
+            buttonPanel.add(downloadButton)
+            mainPanel.add(Box.createVerticalStrut(20))
+            mainPanel.add(buttonPanel)
 
             val outerScroll = JBScrollPane(mainPanel).apply {
                 verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
@@ -331,7 +137,7 @@ object JsonExplainCode {
                 background = DARK_BG
             }
 
-            return JPanel(BorderLayout()).apply {
+            JPanel(BorderLayout()).apply {
                 background = DARK_BG
                 add(outerScroll, BorderLayout.CENTER)
             }
@@ -339,6 +145,151 @@ object JsonExplainCode {
         } catch (e: Exception) {
             errorPanel("Invalid JSON response: ${e.message}")
         }
+    }
+
+
+    private fun saveAsPdf(jsonText: String) {
+        val fileChooser = JFileChooser().apply {
+            dialogTitle = "Save Assistant PDF"
+            selectedFile = File("explain_assistant_report.pdf")
+        }
+
+        val userSelection = fileChooser.showSaveDialog(null)
+        if (userSelection != JFileChooser.APPROVE_OPTION) return
+
+        val filePath = if (fileChooser.selectedFile.path.endsWith(".pdf")) {
+            fileChooser.selectedFile.path
+        } else {
+            "${fileChooser.selectedFile.path}.pdf"
+        }
+
+        val document = Document(PageSize.A4.rotate()) // Landscape
+        try {
+            PdfWriter.getInstance(document, FileOutputStream(filePath))
+            document.open()
+
+            val headingFont = Font(Font.FontFamily.HELVETICA, 14f, Font.BOLD)
+            val labelFont = Font(Font.FontFamily.HELVETICA, 12f, Font.BOLD)
+            val normalFont = Font(Font.FontFamily.HELVETICA, 11f)
+            val grayBg = BaseColor(233, 229, 229)
+
+            document.add(Paragraph("Explain Assistant Feature", headingFont))
+            document.add(Chunk.NEWLINE)
+
+            val jsonElement = Json.parseToJsonElement(jsonText).jsonObject
+
+            // Quality & Remarks
+            document.add(Paragraph("Summary", headingFont))
+            document.add(Paragraph(" "))
+            val quality = extractArray(jsonElement["quality"]).joinToString(", ")
+            val remarks = jsonElement["remarks"]?.jsonPrimitive?.content ?: "N/A"
+            val qrTable = PdfPTable(2).apply {
+                widthPercentage = 100f
+                addHeaderCell("Quality", labelFont, grayBg)
+                addHeaderCell("Remarks", labelFont, grayBg)
+                addContentCell(quality, normalFont)
+                addContentCell(remarks, normalFont)
+            }
+            document.add(qrTable)
+            document.add(Chunk.NEWLINE)
+
+            val explanationArray = jsonElement["explanation"]?.jsonArray ?: JsonArray(emptyList())
+            explanationArray.forEachIndexed { index, item ->
+                val obj = item.jsonObject
+
+                document.add(Paragraph("Explanation", headingFont))
+//                document.add(Chunk.NEWLINE)
+                document.add(Paragraph(" "))
+                // Overview + Detailed Explanation
+                val overview = obj["overview"]?.jsonPrimitive?.content ?: "N/A"
+                val detailed = obj["detailedExplanation"]?.jsonPrimitive?.content ?: "N/A"
+                val expTable = PdfPTable(2).apply {
+                    widthPercentage = 100f
+                    addHeaderCell("Overview", labelFont, grayBg)
+                    addHeaderCell("Detailed Explanation", labelFont, grayBg)
+                    addContentCell(overview, normalFont)
+                    addContentCell(detailed, normalFont)
+                }
+                document.add(expTable)
+                document.add(Chunk.NEWLINE)
+
+                // Key Components
+                document.add(Paragraph("Key Components", labelFont))
+                document.add(Paragraph(" "))
+                val kcTable = PdfPTable(2).apply {
+                    widthPercentage = 100f
+                    addHeaderCell("Name", labelFont, grayBg)
+                    addHeaderCell("Description", labelFont, grayBg)
+                    obj["keyComponents"]?.jsonArray?.forEach { comp ->
+                        val c = comp.jsonObject
+                        addContentCell(c["name"]?.jsonPrimitive?.content ?: "N/A", normalFont)
+                        addContentCell(c["description"]?.jsonPrimitive?.content ?: "N/A", normalFont)
+                    }
+                }
+                document.add(kcTable)
+                document.add(Chunk.NEWLINE)
+
+                // Logic Flow
+                document.add(Paragraph("Logic Flow", labelFont))
+                document.add(Paragraph(" "))
+                val lfTable = PdfPTable(2).apply {
+                    widthPercentage = 100f
+                    addHeaderCell("Step", labelFont, grayBg)
+                    addHeaderCell("Purpose", labelFont, grayBg)
+                    obj["logicFlow"]?.jsonArray?.forEach { step ->
+                        val s = step.jsonObject
+                        addContentCell(s["step"]?.jsonPrimitive?.content ?: "N/A", normalFont)
+                        addContentCell(s["purpose"]?.jsonPrimitive?.content ?: "N/A", normalFont)
+                    }
+                }
+                document.add(lfTable)
+                document.add(Chunk.NEWLINE)
+
+                // Algorithms
+                document.add(Paragraph("Algorithms", labelFont))
+                document.add(Paragraph(" "))
+                val algoTable = PdfPTable(2).apply {
+                    widthPercentage = 100f
+                    addHeaderCell("Name", labelFont, grayBg)
+                    addHeaderCell("Description", labelFont, grayBg)
+                    obj["algorithms"]?.jsonArray?.forEach { algo ->
+                        val a = algo.jsonObject
+                        addContentCell(a["name"]?.jsonPrimitive?.content ?: "N/A", normalFont)
+                        addContentCell(a["description"]?.jsonPrimitive?.content ?: "N/A", normalFont)
+                    }
+                }
+                document.add(algoTable)
+                document.add(Chunk.NEWLINE)
+            }
+
+            document.close()
+            JOptionPane.showMessageDialog(null, "PDF saved successfully at:\n$filePath", "Success", JOptionPane.INFORMATION_MESSAGE)
+        } catch (e: Exception) {
+            JOptionPane.showMessageDialog(null, "Error saving PDF: ${e.message}", "Error", JOptionPane.ERROR_MESSAGE)
+        }
+    }
+    private fun PdfPTable.addHeaderCell(text: String, font: Font, bgColor: BaseColor) {
+        val cell = PdfPCell(Phrase(text, font)).apply {
+            backgroundColor = bgColor
+            paddingTop = 6f
+            paddingBottom = 6f
+            paddingLeft = 6f
+            paddingRight = 6f
+            horizontalAlignment = Element.ALIGN_CENTER
+        }
+        addCell(cell)
+    }
+
+
+    private fun PdfPTable.addContentCell(text: String, font: Font) {
+        val cell = PdfPCell(Phrase(text, font)).apply {
+            paddingTop = 6f
+            paddingBottom = 6f
+            paddingLeft = 6f
+            paddingRight = 6f
+            horizontalAlignment = Element.ALIGN_LEFT
+        }
+        addCell(cell)
     }
 
     private fun extractArray(element: JsonElement?): List<String> {
@@ -352,97 +303,49 @@ object JsonExplainCode {
 
     private fun createSectionLabel(title: String): JLabel {
         return JLabel(title).apply {
-            font = Font("Arial", Font.BOLD, 18)
+            font = java.awt.Font("Arial", java.awt.Font.BOLD, 18)
             foreground = LIGHT_TEXT
-            alignmentX = Component.LEFT_ALIGNMENT
             border = BorderFactory.createEmptyBorder(10, 10, 5, 10)
         }
     }
 
     private fun createCard(label: String?, content: String): JPanel {
-        val card = JPanel()
-        card.layout = BoxLayout(card, BoxLayout.Y_AXIS)
-        card.border = BorderFactory.createLineBorder(LIGHT_TEXT)
-        card.background = DARK_PANEL
+        val card = JPanel().apply {
+            layout = BoxLayout(this, BoxLayout.Y_AXIS)
+            border = BorderFactory.createLineBorder(LIGHT_TEXT)
+            background = DARK_PANEL
+        }
 
         card.add(createLabeledTextArea(label, content))
         return card
     }
 
-//    private fun createLabeledTextArea(label: String?, content: String, height: Int = 120): JPanel {
-//        val panel = JPanel()
-//        panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
-//        panel.alignmentX = Component.LEFT_ALIGNMENT
-//        panel.background = DARK_PANEL
-//
-//        if (!label.isNullOrBlank()) {
-//            val labelComponent = JLabel(label).apply {
-//                font = Font("Arial", Font.BOLD, 14)
-//                foreground = LIGHT_TEXT
-//                alignmentX = Component.LEFT_ALIGNMENT
-//                border = BorderFactory.createEmptyBorder(0, 0, 0, 0)
-//            }
-//            panel.add(labelComponent)
-//            panel.add(Box.createVerticalStrut(5))
-//        }
-//
-//        val textArea = JTextArea(content).apply {
-//            lineWrap = true
-//            wrapStyleWord = true
-//            isEditable = false
-//            font = Font("Arial", Font.PLAIN, 13)
-//            background = DARK_TEXTAREA
-//            foreground = LIGHT_TEXT
-//            border = BorderFactory.createEmptyBorder(8, 8, 8, 8)
-//        }
-//
-//        val scrollPane = JBScrollPane(textArea).apply {
-//            preferredSize = Dimension(850, height)
-//            verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
-//            background = DARK_PANEL
-////            viewportBorder = BorderFactory.createEmptyBorder()
-//        }
-//
-//        panel.add(scrollPane)
-//        return panel
-//    }
-
     private fun createLabeledTextArea(label: String?, content: String, height: Int = 120): JPanel {
         val panel = JPanel().apply {
             layout = BoxLayout(this, BoxLayout.Y_AXIS)
-            alignmentX = Component.LEFT_ALIGNMENT
             background = DARK_PANEL
-            border = BorderFactory.createEmptyBorder(0, 0, 0, 0) // remove outer margin
         }
 
-        if (!label.isNullOrBlank()) {
-            val labelComponent = JLabel(label).apply {
-                font = Font("Arial", Font.BOLD, 14)
+        label?.let {
+            val labelComponent = JLabel(it).apply {
+                font = java.awt.Font("Arial", java.awt.Font.BOLD, 14)
                 foreground = LIGHT_TEXT
-                alignmentX = Component.LEFT_ALIGNMENT
-                border = BorderFactory.createEmptyBorder(0, 5, 0, 0) // no padding for label
             }
             panel.add(labelComponent)
-            panel.add(Box.createVerticalStrut(5))
         }
 
         val textArea = JTextArea(content).apply {
             lineWrap = true
             wrapStyleWord = true
             isEditable = false
-            font = Font("Arial", Font.PLAIN, 13)
+            font = java.awt.Font("Arial", java.awt.Font.PLAIN, 13)
             background = DARK_TEXTAREA
             foreground = LIGHT_TEXT
-            border = BorderFactory.createEmptyBorder(8, 8, 8, 8) // inner padding only
         }
 
         val scrollPane = JBScrollPane(textArea).apply {
             preferredSize = Dimension(850, height)
             verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
-            background = DARK_PANEL
-            border = BorderFactory.createEmptyBorder(0, 0, 0, 0) // remove scrollpane border
-            viewportBorder = null // also prevent viewport from adding padding
-            alignmentX = Component.LEFT_ALIGNMENT
         }
 
         panel.add(scrollPane)
@@ -450,18 +353,15 @@ object JsonExplainCode {
     }
 
     private fun errorPanel(message: String): JPanel {
-        val panel = JPanel(BorderLayout())
-        panel.background = DARK_BG
-        val label = JLabel(message)
-        label.foreground = Color.RED
-        panel.add(label, BorderLayout.CENTER)
-        panel.preferredSize = Dimension(800, 200)
-        return panel
+        return JPanel(BorderLayout()).apply {
+            background = DARK_BG
+            add(JLabel(message).apply { foreground = Color.RED }, BorderLayout.CENTER)
+        }
     }
 
-    // Colors
     private val DARK_BG = Color(60, 63, 65)
     private val DARK_PANEL = Color(75, 78, 80)
     private val DARK_TEXTAREA = Color(50, 53, 55)
     private val LIGHT_TEXT = Color(187, 187, 187)
 }
+
