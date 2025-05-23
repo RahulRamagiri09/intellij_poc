@@ -9,8 +9,7 @@ object DocumentationActions {
         when (item) {
             "Repo Documentation" -> {
                 val panel = createRepoDocumentationUI(
-                    onAccept = { println("User accepted Repo Documentation") },
-                    onReject = { println("User rejected Repo Documentation") }
+
                 )
 
                 val toolWindow = com.intellij.openapi.wm.ToolWindowManager
