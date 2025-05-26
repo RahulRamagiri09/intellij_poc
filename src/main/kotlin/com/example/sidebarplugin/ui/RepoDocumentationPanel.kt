@@ -45,7 +45,7 @@ fun createRepoDocumentationUI(): JPanel {
         label.alignmentX = Component.LEFT_ALIGNMENT
 
         val textField = JTextField(30)
-        textField.maximumSize = Dimension(300, 24)
+        textField.maximumSize = Dimension(300, 32)
         textField.alignmentX = Component.LEFT_ALIGNMENT
 
         val fieldPanel = JPanel()
@@ -83,10 +83,17 @@ fun createRepoDocumentationUI(): JPanel {
     scrollPane.isVisible = false
     mainPanel.add(scrollPane)
 
-    val buttonPanel = JPanel(FlowLayout(FlowLayout.LEFT))
+    val buttonPanel = JPanel()
+    buttonPanel.layout = BoxLayout(buttonPanel, BoxLayout.X_AXIS)
+    buttonPanel.alignmentX = Component.LEFT_ALIGNMENT
+
     val submitButton = JButton("Submit")
+    submitButton.alignmentX = Component.LEFT_ALIGNMENT
+
     buttonPanel.add(submitButton)
+    mainPanel.add(Box.createVerticalStrut(25))
     mainPanel.add(buttonPanel)
+
 
     val client = OkHttpClient()
     val mediaType = "application/json; charset=utf-8".toMediaType()
