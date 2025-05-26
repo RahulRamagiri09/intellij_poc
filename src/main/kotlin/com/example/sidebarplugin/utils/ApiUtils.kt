@@ -69,7 +69,7 @@ object ApiUtils {
                         """.trimIndent()
                     }
 
-                    cleanedUrl.contains("/gitkbapi/get_code") || cleanedUrl.contains("/gitkbapi/explain") -> {
+                    cleanedUrl.contains("/gitkb/get_code") || cleanedUrl.contains("/gitkb/explain") -> {
                         """
                         {
                             "question": "$safeText",

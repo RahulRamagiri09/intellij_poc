@@ -26,32 +26,32 @@ fun createRepoDocumentationUI(): JPanel {
 
     val titleLabel = JLabel("📘 Repository Documentation")
     titleLabel.font = titleLabel.font.deriveFont(20f)
-    titleLabel.alignmentX = Component.CENTER_ALIGNMENT
+    titleLabel.alignmentX = Component.LEFT_ALIGNMENT
     mainPanel.add(titleLabel)
 
     mainPanel.add(Box.createVerticalStrut(15))
 
     val subtitle = JLabel("Generate comprehensive documentation for a repository by providing the following details:")
-    subtitle.alignmentX = Component.CENTER_ALIGNMENT
+    subtitle.alignmentX = Component.LEFT_ALIGNMENT
     mainPanel.add(subtitle)
     mainPanel.add(Box.createVerticalStrut(30))
 
     val formPanel = JPanel()
     formPanel.layout = BoxLayout(formPanel, BoxLayout.Y_AXIS)
-    formPanel.alignmentX = Component.CENTER_ALIGNMENT
+    formPanel.alignmentX = Component.LEFT_ALIGNMENT
 
     fun createLabeledField(labelText: String): JTextField {
         val label = JLabel(labelText)
-        label.alignmentX = Component.CENTER_ALIGNMENT
+        label.alignmentX = Component.LEFT_ALIGNMENT
 
         val textField = JTextField(30)
         textField.maximumSize = Dimension(300, 24)
-        textField.alignmentX = Component.CENTER_ALIGNMENT
+        textField.alignmentX = Component.LEFT_ALIGNMENT
 
         val fieldPanel = JPanel()
         fieldPanel.layout = BoxLayout(fieldPanel, BoxLayout.Y_AXIS)
         fieldPanel.border = EmptyBorder(15, 0, 10, 0)
-        fieldPanel.alignmentX = Component.CENTER_ALIGNMENT
+        fieldPanel.alignmentX = Component.LEFT_ALIGNMENT
 
         fieldPanel.add(label)
         fieldPanel.add(Box.createVerticalStrut(4))
@@ -70,7 +70,7 @@ fun createRepoDocumentationUI(): JPanel {
 
     val statusLabel = JLabel(" ")
     statusLabel.foreground = Color.YELLOW
-    statusLabel.alignmentX = Component.CENTER_ALIGNMENT
+    statusLabel.alignmentX = Component.LEFT_ALIGNMENT
     mainPanel.add(Box.createVerticalStrut(10))
     mainPanel.add(statusLabel)
     mainPanel.add(Box.createVerticalStrut(10))
@@ -83,7 +83,7 @@ fun createRepoDocumentationUI(): JPanel {
     scrollPane.isVisible = false
     mainPanel.add(scrollPane)
 
-    val buttonPanel = JPanel(FlowLayout(FlowLayout.CENTER))
+    val buttonPanel = JPanel(FlowLayout(FlowLayout.LEFT))
     val submitButton = JButton("Submit")
     buttonPanel.add(submitButton)
     mainPanel.add(buttonPanel)
@@ -370,3 +370,4 @@ fun createRepoDocumentationUI(): JPanel {
     centeredWrapper.add(mainPanel)
     return centeredWrapper
 }
+
