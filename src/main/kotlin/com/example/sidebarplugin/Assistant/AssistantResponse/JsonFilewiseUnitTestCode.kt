@@ -185,9 +185,6 @@ import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
 import com.intellij.ui.components.JBScrollPane
-import kotlinx.serialization.json.*
-import java.awt.*
-import javax.swing.*
 import javax.swing.filechooser.FileNameExtensionFilter
 import com.itextpdf.text.*
 import com.itextpdf.text.pdf.*
@@ -281,7 +278,7 @@ object JsonFilewiseUnitTestCode {
     }
 
 
-    fun renderResultsPanel(resultsJson: String): JPanel {
+    fun renderResultsPanel(resultsJson: String, language: String = ""): JPanel {
         val mainPanel = JPanel().apply {
             layout = BoxLayout(this, BoxLayout.Y_AXIS)
             background = DARK_BG
@@ -315,8 +312,15 @@ object JsonFilewiseUnitTestCode {
                 mainPanel.add(Box.createVerticalStrut(20))
             }
             val parsedTestcases = testcases.mapNotNull { it.jsonObject }
-            val downloadButton = JButton("Download PDF").apply {
+            // Create horizontal panel for the buttons
+            val buttonPanel = JPanel().apply {
+                layout = BoxLayout(this, BoxLayout.X_AXIS)
+                background = DARK_BG
                 alignmentX = Component.LEFT_ALIGNMENT
+            }
+
+// PDF Button
+            val downloadButton = JButton("Download PDF").apply {
                 background = Color(100, 100, 255)
                 foreground = Color.WHITE
                 font = AwtFont("Arial", AwtFont.BOLD, 14)
@@ -324,21 +328,87 @@ object JsonFilewiseUnitTestCode {
                 addActionListener {
                     generatePdf(parsedTestcases)
                 }
-
             }
-            mainPanel.add(Box.createVerticalStrut(20))
-            mainPanel.add(downloadButton)
+            buttonPanel.add(downloadButton)
+            buttonPanel.add(Box.createHorizontalStrut(10)) // spacing between buttons
+
+// Optional .py or .java button
+            val codeExtension = when (language.lowercase()) {
+                "python" -> "py"
+                "java" -> "java"
+                else -> null
+            }
+
+            if (codeExtension != null) {
+                val downloadCodeButton = JButton("Download .$codeExtension").apply {
+                    background = Color(100, 100, 255)
+                    foreground = Color.WHITE
+                    font = AwtFont("Arial", AwtFont.BOLD, 14)
+
+                    addActionListener {
+                        val fileChooser = JFileChooser().apply {
+                            selectedFile = File("Filewise Unit Test Code.$codeExtension")
+                        }
+
+                        if (fileChooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) return@addActionListener
+
+                        try {
+                            val file = fileChooser.selectedFile
+                            val contentBuilder = StringBuilder()
+
+                            // Add imports if present
+                            val imports = root["results"]?.jsonObject?.get("imports")?.jsonArray
+                            imports?.forEach { imp ->
+                                contentBuilder.appendLine(imp.jsonPrimitive.content)
+                            }
+                            if (!imports.isNullOrEmpty()) {
+                                contentBuilder.appendLine("\n") // spacing after imports
+                            }
+
+                            // Append each test case with description and data
+                            testcases.forEach { test ->
+                                val testObj = test.jsonObject
+                                val description = testObj["description"]?.jsonPrimitive?.content ?: "N/A"
+                                val data = testObj["data"]?.jsonArray?.joinToString(", ") { it.toString() } ?: "N/A"
+                                val testcase = testObj["testcase"]?.jsonPrimitive?.content ?: "N/A"
+
+                                val commentPrefix = when (language.lowercase()) {
+                                    "python" -> "#"
+                                    "java" -> "//"
+                                    else -> "//"
+                                }
+
+                                contentBuilder.appendLine("$commentPrefix Description: $description")
+                                contentBuilder.appendLine("$commentPrefix Data: $data")
+                                contentBuilder.appendLine()
+                                contentBuilder.appendLine(testcase)
+                                contentBuilder.appendLine()
+                                contentBuilder.appendLine()
+
+                            }
+
+
+                            file.writeText(contentBuilder.toString())
+                            JOptionPane.showMessageDialog(null, "Code saved successfully to: ${file.absolutePath}")
+                        } catch (e: Exception) {
+                            JOptionPane.showMessageDialog(null, "Failed to save code: ${e.message}")
+                        }
+                    }
+
+                }
+                buttonPanel.add(downloadCodeButton)
+            }
+
+           // Add the horizontal button panel to the main panel
+            mainPanel.add(Box.createVerticalStrut(10))
+            mainPanel.add(buttonPanel)
 
             mainPanel.revalidate()
             mainPanel.repaint()
 
-
-
         } catch (e: Exception) {
             return errorPanel("Failed to parse test results: ${e.message}")
         }
-
-
 
         val outerScroll = JBScrollPane(mainPanel).apply {
             verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
@@ -357,7 +427,7 @@ object JsonFilewiseUnitTestCode {
         try {
             val fileChooser = JFileChooser().apply {
                 fileFilter = FileNameExtensionFilter("PDF files", "pdf")
-                selectedFile = File("UnitTestCases.pdf")
+                selectedFile = File("Filewise Unit Test Code.pdf")
             }
 
             if (fileChooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) return

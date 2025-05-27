@@ -65,9 +65,6 @@ object AssistantActions {
                             val cancelUrl = "$storedUrl/assistant/file-testCases/cancel"
 
                             val cancelResponse = ApiUtils.sendCancelJobRequest(cancelUrl, id, authToken)
-//                            SwingUtilities.invokeLater {
-//                                JOptionPane.showMessageDialog(null, "Job cancellation response:\n$cancelResponse")
-//                            }
                             SwingUtilities.invokeLater {
                                 val message = try {
                                     val json = JSONObject(cancelResponse)
@@ -85,45 +82,6 @@ object AssistantActions {
                     }
                 }
             }
-
-//            thread {
-//                try {
-//                    val jobResponse = ApiUtils.sendJobRequest(apiUrl, selectedText, language, authToken, projectName, branchName)
-//                    jobId = JsonFilewiseUnitTestCode.extractJobID(jobResponse)
-//
-//                    val id = jobId
-//                    if (id == null || id.startsWith("Error") || id == "JobID not found") {
-//                        SwingUtilities.invokeLater {
-//                            loadingDialog.dispose()
-//                            JOptionPane.showMessageDialog(null, id ?: "JobID not found", "Error", JOptionPane.ERROR_MESSAGE)
-//                        }
-//                        return@thread
-//                    }
-//
-//                    val statusUrl = "$storedUrl/assistant/file-testCases/status"
-//                    val results = JsonFilewiseUnitTestCode.pollForResults(statusUrl, id, authToken) {
-//                        isCancelled.get()
-//                    }
-//
-//                    SwingUtilities.invokeLater {
-//                        loadingDialog.dispose()
-//                        if (isCancelled.get()) {
-//                            JOptionPane.showMessageDialog(null, "Job was cancelled by user.", "Cancelled", JOptionPane.INFORMATION_MESSAGE)
-//                        }
-//                        else if (results.startsWith("Timeout") || results.startsWith("Error")) {
-//                            JOptionPane.showMessageDialog(null, results, "Error", JOptionPane.ERROR_MESSAGE)
-//                        } else {
-//                            val panel = JsonFilewiseUnitTestCode.renderResultsPanel(results)
-//                            UIUtils.showResponsePanel(project, editor, panel)
-//                        }
-//                    }
-//                } catch (e: Exception) {
-//                    SwingUtilities.invokeLater {
-//                        loadingDialog.dispose()
-//                        JOptionPane.showMessageDialog(null, "Error: ${e.message}", "API Error", JOptionPane.ERROR_MESSAGE)
-//                    }
-//                }
-//            }
 
             val cancellationMessage = AtomicReference<String?>(null)
 
@@ -157,7 +115,7 @@ object AssistantActions {
                         } else if (results.startsWith("Timeout") || results.startsWith("Error")) {
                             JOptionPane.showMessageDialog(null, results, "Error", JOptionPane.ERROR_MESSAGE)
                         } else {
-                            val panel = JsonFilewiseUnitTestCode.renderResultsPanel(results)
+                            val panel = JsonFilewiseUnitTestCode.renderResultsPanel(results, language)
                             UIUtils.showResponsePanel(project, editor, panel)
                         }
                     }
