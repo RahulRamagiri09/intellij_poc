@@ -471,8 +471,8 @@ object JsonFilewiseUnitTestCode {
         }
 
         val textArea = JTextArea(content).apply {
-            lineWrap = true
-            wrapStyleWord = true
+            lineWrap = false
+            wrapStyleWord = false
             isEditable = false
             font = AwtFont("Arial", AwtFont.PLAIN, 13)
             background = DARK_TEXTAREA
