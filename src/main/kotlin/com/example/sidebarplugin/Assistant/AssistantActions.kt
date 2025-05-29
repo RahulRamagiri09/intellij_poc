@@ -65,9 +65,6 @@
 //                            val cancelUrl = "$storedUrl/assistant/file-testCases/cancel"
 //
 //                            val cancelResponse = ApiUtils.sendCancelJobRequest(cancelUrl, id, authToken)
-////                            SwingUtilities.invokeLater {
-////                                JOptionPane.showMessageDialog(null, "Job cancellation response:\n$cancelResponse")
-////                            }
 //                            SwingUtilities.invokeLater {
 //                                val message = try {
 //                                    val json = JSONObject(cancelResponse)
@@ -85,45 +82,6 @@
 //                    }
 //                }
 //            }
-//
-////            thread {
-////                try {
-////                    val jobResponse = ApiUtils.sendJobRequest(apiUrl, selectedText, language, authToken, projectName, branchName)
-////                    jobId = JsonFilewiseUnitTestCode.extractJobID(jobResponse)
-////
-////                    val id = jobId
-////                    if (id == null || id.startsWith("Error") || id == "JobID not found") {
-////                        SwingUtilities.invokeLater {
-////                            loadingDialog.dispose()
-////                            JOptionPane.showMessageDialog(null, id ?: "JobID not found", "Error", JOptionPane.ERROR_MESSAGE)
-////                        }
-////                        return@thread
-////                    }
-////
-////                    val statusUrl = "$storedUrl/assistant/file-testCases/status"
-////                    val results = JsonFilewiseUnitTestCode.pollForResults(statusUrl, id, authToken) {
-////                        isCancelled.get()
-////                    }
-////
-////                    SwingUtilities.invokeLater {
-////                        loadingDialog.dispose()
-////                        if (isCancelled.get()) {
-////                            JOptionPane.showMessageDialog(null, "Job was cancelled by user.", "Cancelled", JOptionPane.INFORMATION_MESSAGE)
-////                        }
-////                        else if (results.startsWith("Timeout") || results.startsWith("Error")) {
-////                            JOptionPane.showMessageDialog(null, results, "Error", JOptionPane.ERROR_MESSAGE)
-////                        } else {
-////                            val panel = JsonFilewiseUnitTestCode.renderResultsPanel(results)
-////                            UIUtils.showResponsePanel(project, editor, panel)
-////                        }
-////                    }
-////                } catch (e: Exception) {
-////                    SwingUtilities.invokeLater {
-////                        loadingDialog.dispose()
-////                        JOptionPane.showMessageDialog(null, "Error: ${e.message}", "API Error", JOptionPane.ERROR_MESSAGE)
-////                    }
-////                }
-////            }
 //
 //            val cancellationMessage = AtomicReference<String?>(null)
 //
@@ -157,7 +115,7 @@
 //                        } else if (results.startsWith("Timeout") || results.startsWith("Error")) {
 //                            JOptionPane.showMessageDialog(null, results, "Error", JOptionPane.ERROR_MESSAGE)
 //                        } else {
-//                            val panel = JsonFilewiseUnitTestCode.renderResultsPanel(results)
+//                            val panel = JsonFilewiseUnitTestCode.renderResultsPanel(results, language)
 //                            UIUtils.showResponsePanel(project, editor, panel)
 //                        }
 //                    }
@@ -227,10 +185,10 @@
 //    }
 //}
 
-
+//added filewise unit test to send entire file code instead of selected code
 package com.example.sidebarplugin.Assistant
-import java.util.concurrent.atomic.AtomicReference
 
+import java.util.concurrent.atomic.AtomicReference
 import com.example.sidebarplugin.Assistant.AssistantResponse.*
 import com.example.sidebarplugin.GitInfo
 import com.example.sidebarplugin.LanguageDetectUtils
@@ -253,7 +211,7 @@ object AssistantActions {
         val editor = FileEditorManager.getInstance(project).selectedTextEditor
         val selectedText = editor?.selectionModel?.selectedText ?: "No Code Selected"
 
-        if (selectedText == "No Code Selected") {
+        if (selectedText == "No Code Selected" && assistantType != "Filewise Unit Test Code") {
             JOptionPane.showMessageDialog(null, "Please select some code before using the assistant.")
             return
         }
@@ -317,7 +275,9 @@ object AssistantActions {
 
             thread {
                 try {
-                    val jobResponse = ApiUtils.sendJobRequest(apiUrl, selectedText, language, authToken, projectName, branchName)
+                    // <-- Changed here: send entire editor text instead of selectedText
+                    val fullFileText = editor?.document?.text ?: ""
+                    val jobResponse = ApiUtils.sendJobRequest(apiUrl, fullFileText, language, authToken, projectName, branchName)
                     jobId = JsonFilewiseUnitTestCode.extractJobID(jobResponse)
 
                     val id = jobId
