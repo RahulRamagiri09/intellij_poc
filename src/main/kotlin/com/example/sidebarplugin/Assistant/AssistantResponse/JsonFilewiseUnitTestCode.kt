@@ -98,152 +98,173 @@ object JsonFilewiseUnitTestCode {
         println("Timeout reached. Job did not complete.")
         return "Timeout: Job did not complete in time."
     }
+fun renderResultsPanel(resultsJson: String, language: String = ""): JPanel {
+    val mainPanel = JPanel().apply {
+        layout = BoxLayout(this, BoxLayout.Y_AXIS)
+        background = DARK_BG
+    }
 
+    try {
+        val root = Json.parseToJsonElement(resultsJson).jsonObject
+        val status = root["status"]?.jsonPrimitive?.content?.uppercase() ?: "UNKNOWN"
 
-    fun renderResultsPanel(resultsJson: String, language: String = ""): JPanel {
-        val mainPanel = JPanel().apply {
-            layout = BoxLayout(this, BoxLayout.Y_AXIS)
-            background = DARK_BG
+        if (status == "FAILED") {
+            val statusDisplay = root["Status_display"]?.jsonPrimitive?.content ?: "Job failed with no additional info."
+            mainPanel.add(createSectionLabel(" Job Failed"))
+            mainPanel.add(createCard("Failure Details", statusDisplay.trim(), height = 300))
+            return wrapWithScroll(mainPanel)
         }
 
-        try {
-            val root = Json.parseToJsonElement(resultsJson).jsonObject
-            val status = root["status"]?.jsonPrimitive?.content?.uppercase() ?: "UNKNOWN"
+        val testcases = root["testcases"]?.jsonArray ?: return errorPanel("No test cases found.")
+        val checkboxTestcases = mutableListOf<Pair<JCheckBox, JsonObject>>()
 
-            // Show formatted failure message if status is FAILED
-            if (status == "FAILED") {
-                val statusDisplay = root["Status_display"]?.jsonPrimitive?.content ?: "Job failed with no additional info."
-                mainPanel.add(createSectionLabel(" Job Failed"))
-                mainPanel.add(createCard("Failure Details", statusDisplay.trim(), height = 300))
+        mainPanel.add(createSectionLabel("Filewise Unit Test Cases:"))
 
-                return wrapWithScroll(mainPanel)
+        // ✅ Add Select All checkbox
+        val selectAllCheckbox = JCheckBox("Select All").apply {
+            isSelected = false
+            foreground = LIGHT_TEXT
+            background = DARK_BG
+        }
+        val selectAllPanel = JPanel().apply {
+            layout = FlowLayout(FlowLayout.LEFT)
+            background = DARK_BG
+            alignmentX = Component.LEFT_ALIGNMENT
+            add(selectAllCheckbox)
+        }
+        mainPanel.add(selectAllPanel)
+
+        testcases.forEachIndexed { index, test ->
+            val testObj = test.jsonObject
+            val description = testObj["description"]?.jsonPrimitive?.content ?: "N/A"
+            val testcase = testObj["testcase"]?.jsonPrimitive?.content ?: "N/A"
+            val data = testObj["data"]?.jsonArray?.joinToString("\n") { it.toString() } ?: "N/A"
+
+            val checkbox = JCheckBox("Include this test case").apply {
+                isSelected = false
+                foreground = LIGHT_TEXT
+                background = DARK_BG
             }
-            val testcases = root["testcases"]?.jsonArray ?: return errorPanel("No test cases found.")
+            checkboxTestcases.add(Pair(checkbox, testObj))
 
-            mainPanel.add(createSectionLabel("Filewise Unit Test Cases:"))
-
-            testcases.forEachIndexed { index, test ->
-                val testObj = test.jsonObject
-                val description = testObj["description"]?.jsonPrimitive?.content ?: "N/A"
-                val testcase = testObj["testcase"]?.jsonPrimitive?.content ?: "N/A"
-                val data = testObj["data"]?.jsonArray?.joinToString("\n") { it.toString() } ?: "N/A"
-
-                mainPanel.add(createCard("Description", description, height = 60))
-                mainPanel.add(createCard("Data", data, height = 80))
-                mainPanel.add(createCard("Test Case", testcase, height = 150))
-                mainPanel.add(Box.createVerticalStrut(20))
-            }
-            val parsedTestcases = testcases.mapNotNull { it.jsonObject }
-            // Create horizontal panel for the buttons
-            val buttonPanel = JPanel().apply {
-                layout = BoxLayout(this, BoxLayout.X_AXIS)
+            val casePanel = JPanel().apply {
+                layout = BoxLayout(this, BoxLayout.Y_AXIS)
                 background = DARK_BG
                 alignmentX = Component.LEFT_ALIGNMENT
+                border = BorderFactory.createEmptyBorder(10, 10, 10, 10)
             }
 
-// PDF Button
-            val downloadButton = JButton("Download PDF").apply {
+            casePanel.add(checkbox)
+            casePanel.add(createCard("Description", description, height = 60))
+            casePanel.add(createCard("Data", data, height = 80))
+            casePanel.add(createCard("Test Case", testcase, height = 150))
+            casePanel.add(Box.createVerticalStrut(20))
+
+            mainPanel.add(casePanel)
+        }
+
+        // ✅ Select All checkbox behavior
+        selectAllCheckbox.addActionListener {
+            val select = selectAllCheckbox.isSelected
+            checkboxTestcases.forEach { it.first.isSelected = select }
+        }
+
+        val buttonPanel = JPanel().apply {
+            layout = BoxLayout(this, BoxLayout.X_AXIS)
+            background = DARK_BG
+            alignmentX = Component.LEFT_ALIGNMENT
+        }
+
+        val downloadButton = JButton("Download PDF").apply {
+            background = Color(100, 100, 255)
+            foreground = Color.WHITE
+            font = AwtFont("Arial", AwtFont.BOLD, 14)
+            addActionListener {
+                val selected = checkboxTestcases.filter { it.first.isSelected }.map { it.second }
+                if (selected.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please select at least one test case.")
+                    return@addActionListener
+                }
+                generatePdf(selected)
+            }
+        }
+        buttonPanel.add(downloadButton)
+        buttonPanel.add(Box.createHorizontalStrut(10))
+
+        val codeExtension = when (language.lowercase()) {
+            "python" -> "py"
+            "java" -> "java"
+            else -> null
+        }
+
+        if (codeExtension != null) {
+            val downloadCodeButton = JButton("Download .$codeExtension").apply {
                 background = Color(100, 100, 255)
                 foreground = Color.WHITE
                 font = AwtFont("Arial", AwtFont.BOLD, 14)
 
                 addActionListener {
-                    generatePdf(parsedTestcases)
-                }
-            }
-            buttonPanel.add(downloadButton)
-            buttonPanel.add(Box.createHorizontalStrut(10)) // spacing between buttons
-
-// Optional .py or .java button
-            val codeExtension = when (language.lowercase()) {
-                "python" -> "py"
-                "java" -> "java"
-                else -> null
-            }
-
-            if (codeExtension != null) {
-                val downloadCodeButton = JButton("Download .$codeExtension").apply {
-                    background = Color(100, 100, 255)
-                    foreground = Color.WHITE
-                    font = AwtFont("Arial", AwtFont.BOLD, 14)
-
-                    addActionListener {
-                        val fileChooser = JFileChooser().apply {
-                            selectedFile = File("Filewise Unit Test Code.$codeExtension")
-                        }
-
-                        if (fileChooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) return@addActionListener
-
-                        try {
-                            val file = fileChooser.selectedFile
-                            val contentBuilder = StringBuilder()
-
-                            // Add imports if present
-                            val imports = root?.jsonObject?.get("imports")?.jsonArray
-                            imports?.forEach { imp ->
-                                contentBuilder.appendLine(imp.jsonPrimitive.content)
-                            }
-                            println("******** $imports")
-                            if (!imports.isNullOrEmpty()) {
-                                contentBuilder.appendLine("\n") // spacing after imports
-                            }
-
-                            // Append each test case with description and data
-                            testcases.forEach { test ->
-                                val testObj = test.jsonObject
-                                val description = testObj["description"]?.jsonPrimitive?.content ?: "N/A"
-                                val data = testObj["data"]?.jsonArray?.joinToString(", ") { it.toString() } ?: "N/A"
-                                val testcase = testObj["testcase"]?.jsonPrimitive?.content ?: "N/A"
-
-                                val commentPrefix = when (language.lowercase()) {
-                                    "python" -> "#"
-                                    "java" -> "//"
-                                    else -> "//"
-                                }
-
-                                contentBuilder.appendLine("$commentPrefix Description: $description")
-                                contentBuilder.appendLine("$commentPrefix Data: $data")
-                                contentBuilder.appendLine()
-                                contentBuilder.appendLine(testcase)
-                                contentBuilder.appendLine()
-                                contentBuilder.appendLine()
-
-                            }
-
-
-                            file.writeText(contentBuilder.toString())
-                            JOptionPane.showMessageDialog(null, "Code saved successfully to: ${file.absolutePath}")
-                        } catch (e: Exception) {
-                            JOptionPane.showMessageDialog(null, "Failed to save code: ${e.message}")
-                        }
+                    val selected = checkboxTestcases.filter { it.first.isSelected }.map { it.second }
+                    if (selected.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Please select at least one test case.")
+                        return@addActionListener
                     }
 
+                    val fileChooser = JFileChooser().apply {
+                        selectedFile = File("Filewise Unit Test Code.$codeExtension")
+                    }
+
+                    if (fileChooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) return@addActionListener
+
+                    try {
+                        val file = fileChooser.selectedFile
+                        val contentBuilder = StringBuilder()
+
+                        val imports = root["imports"]?.jsonArray
+                        imports?.forEach { imp -> contentBuilder.appendLine(imp.jsonPrimitive.content) }
+                        if (!imports.isNullOrEmpty()) contentBuilder.appendLine("\n")
+
+                        selected.forEach { testObj ->
+                            val description = testObj["description"]?.jsonPrimitive?.content ?: "N/A"
+                            val data = testObj["data"]?.jsonArray?.joinToString(", ") { it.toString() } ?: "N/A"
+                            val testcase = testObj["testcase"]?.jsonPrimitive?.content ?: "N/A"
+
+                            val commentPrefix = when (language.lowercase()) {
+                                "python" -> "#"
+                                "java" -> "//"
+                                else -> "//"
+                            }
+
+                            contentBuilder.appendLine("$commentPrefix Description: $description")
+                            contentBuilder.appendLine("$commentPrefix Data: $data")
+                            contentBuilder.appendLine()
+                            contentBuilder.appendLine(testcase)
+                            contentBuilder.appendLine()
+                            contentBuilder.appendLine()
+                        }
+
+                        file.writeText(contentBuilder.toString())
+                        JOptionPane.showMessageDialog(null, "Code saved successfully to: ${file.absolutePath}")
+                    } catch (e: Exception) {
+                        JOptionPane.showMessageDialog(null, "Failed to save code: ${e.message}")
+                    }
                 }
-                buttonPanel.add(downloadCodeButton)
             }
-            // Add the horizontal button panel to the main panel
-            mainPanel.add(Box.createVerticalStrut(10))
-            mainPanel.add(buttonPanel)
-
-            mainPanel.revalidate()
-            mainPanel.repaint()
-
-        } catch (e: Exception) {
-            return errorPanel("Failed to parse test results: ${e.message}")
+            buttonPanel.add(downloadCodeButton)
         }
 
-        val outerScroll = JBScrollPane(mainPanel).apply {
-            verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
-            horizontalScrollBarPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
-            preferredSize = Dimension(1200, 800)
-            background = DARK_BG
-        }
+        mainPanel.add(Box.createVerticalStrut(10))
+        mainPanel.add(buttonPanel)
+        mainPanel.revalidate()
+        mainPanel.repaint()
 
-        return JPanel(BorderLayout()).apply {
-            background = DARK_BG
-            add(outerScroll, BorderLayout.CENTER)
-        }
+    } catch (e: Exception) {
+        return errorPanel("Failed to parse test results: ${e.message}")
     }
+
+    return wrapWithScroll(mainPanel)
+}
+
 
     private fun generatePdf(testcases: List<JsonObject>) {
         try {
