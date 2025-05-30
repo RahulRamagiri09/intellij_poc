@@ -1,31 +1,37 @@
 package com.example.sidebarplugin
+
 import com.example.sidebarplugin.KB.KBActions
+import com.example.sidebarplugin.utils.IconUtils
 import com.intellij.openapi.project.Project
-import com.intellij.ui.components.JBList
-import javax.swing.*
+import java.awt.*
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
+import javax.swing.*
 
 object DropdownMenuKB {
     fun createDropdownMenu(title: String, items: List<String>, project: Project): JPanel {
         val dropdownPanel = JPanel()
         dropdownPanel.layout = BoxLayout(dropdownPanel, BoxLayout.Y_AXIS)
 
-        val subcategoryList = JBList(items)
-        subcategoryList.selectionMode = ListSelectionModel.SINGLE_SELECTION
-        subcategoryList.visibleRowCount = 4
+        val iconMap = mapOf(
+            "Get Response From KB" to IconUtils.load("Get_kb.svg")
+        )
 
-        subcategoryList.addMouseListener(object : MouseAdapter() {
-            override fun mouseClicked(e: MouseEvent?) {
-                val selectedItem = subcategoryList.selectedValue
-                if (selectedItem != null) {
-                    KBActions.handleKBRequest(project, selectedItem)
-                    subcategoryList.clearSelection() // Ensures re-selection triggers the API call again
+        items.forEach { item ->
+            val label = JLabel(item, iconMap[item], JLabel.LEFT)
+            label.alignmentX = Component.LEFT_ALIGNMENT
+            label.border = BorderFactory.createEmptyBorder(4, 4, 4, 4)
+            label.cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
+
+            label.addMouseListener(object : MouseAdapter() {
+                override fun mouseClicked(e: MouseEvent?) {
+                    KBActions.handleKBRequest(project, item)
                 }
-            }
-        })
+            })
 
-        dropdownPanel.add(JScrollPane(subcategoryList))
+            dropdownPanel.add(label)
+        }
+
         return dropdownPanel
     }
 }
