@@ -27,6 +27,7 @@ object DropDownMenuAssistant {
                 cellHasFocus: Boolean
             ): Component {
                 val label = JLabel(value.label, IconUtils.load(value.iconName), JLabel.LEFT)
+                label.iconTextGap = 8
                 if (isSelected) {
                     label.background = list.selectionBackground
                     label.foreground = list.selectionForeground
