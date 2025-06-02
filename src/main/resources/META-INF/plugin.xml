@@ -1,6 +1,6 @@
 <idea-plugin>
     <id>org.plugin</id>
-    <name>Sidebar</name>
+    <name>NeoAI</name>
     <vendor>Bl</vendor>
     <description>Plugin with a sidebar that displays two categories.</description>
     <depends>com.intellij.modules.platform</depends>
@@ -12,6 +12,15 @@
                     factoryClass="com.example.sidebarplugin.SidebarToolWindowFactory"
                     icon="/icons/Genie-lamp.svg"
         />
+
+        <toolWindow
+                id="Response"
+                anchor="right"
+                factoryClass="com.example.sidebarplugin.ui.SidebarRightToolWindowFactory"
+                icon="/icons/Genie-lamp.svg"
+        />
+
+        <applicationService serviceImplementation="com.example.sidebarplugin.storage.PersistentState"/>
     </extensions>
 
 </idea-plugin>

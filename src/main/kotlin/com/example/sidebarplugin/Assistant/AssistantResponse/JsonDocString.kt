@@ -1,4 +1,4 @@
-package com.example.sidebarplugin.AssistantResponse
+package com.example.sidebarplugin.Assistant.AssistantResponse
 
 import kotlinx.serialization.json.*
 

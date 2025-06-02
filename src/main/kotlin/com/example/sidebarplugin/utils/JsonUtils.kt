@@ -1,4 +1,4 @@
-package com.example.sidebarplugin
+package com.example.sidebarplugin.utils
 
 import kotlinx.serialization.json.*
 

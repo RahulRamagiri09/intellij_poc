@@ -1,13 +1,13 @@
 package com.example.sidebarplugin
 
-import com.example.sidebarplugin.Assistant.AssistantActions
+import com.example.sidebarplugin.GitKB.GitKBActions
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBList
 import javax.swing.*
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 
-object DropDownMenuAssistant {
+object DropdownMenuGitKB {
     fun createDropdownMenu(title: String, items: List<String>, project: Project): JPanel {
         val dropdownPanel = JPanel()
         dropdownPanel.layout = BoxLayout(dropdownPanel, BoxLayout.Y_AXIS)
@@ -20,7 +20,7 @@ object DropDownMenuAssistant {
             override fun mouseClicked(e: MouseEvent?) {
                 val selectedItem = subcategoryList.selectedValue
                 if (selectedItem != null) {
-                    AssistantActions.handleAssistantRequest(project, selectedItem)
+                    GitKBActions.handleGitKBRequest(project, selectedItem)
                     subcategoryList.clearSelection() // Ensures re-selection triggers the API call again
                 }
             }
