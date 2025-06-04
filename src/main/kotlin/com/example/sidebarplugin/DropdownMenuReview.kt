@@ -40,8 +40,8 @@ object DropDownMenuReview {
 object LanguageDetectUtils {
     fun mapFileExtensionToLanguages(fileExtension: String): String {
         return when (fileExtension.lowercase()) {
-            "py" -> "Python"
-            "java" -> "Java"
+            "py" -> "python"
+            "java" -> "java"
             "kt" -> "Kotlin"
             "js" -> "JavaScript"
             "ts" -> "TypeScript"
