@@ -22,10 +22,11 @@ object ApiUtils {
 
             val cleanedUrl = apiUrl.trim().trimEnd('/')
             val url = URL(cleanedUrl)
-
+//            val test = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJyYWh1bDk3QGdtYWlsLmNvbSIsInVzZXJJZCI6IjY4Mzk3NjhiMDFhZmI0YWEwMDI2NjE2MCIsImV4cCI6MTc1MTUyMjgyM30.Wzk3cpAYF5ObzDhCtuoYOTDRKiIX8wAkevtUF9sX7gE"
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "POST"
             connection.setRequestProperty("Authorization", "Bearer $authToken")
+//            connection.setRequestProperty("Authorization", "Bearer $test")
             connection.doOutput = true
 
             val safeText = text.replace("\\", "\\\\")
@@ -54,41 +55,98 @@ object ApiUtils {
                     it.flush()
                 }
 
-            } else {
+            }
+
+//            else {
+//                connection.setRequestProperty("Content-Type", "application/json")
+//
+//                val jsonInputString = when {
+//                    cleanedUrl.endsWith("/genieapi/assistant/code-generation") -> {
+//                        """
+//                        {
+//                            "prompt": "$safeText",
+//                            "language": "$language",
+//                            "project_name": "$projectName",
+//                            "branch_name": "$branchName"
+//                        }
+//                        """.trimIndent()
+//                    }
+//
+//                    cleanedUrl.contains("/gitkb/get_code") || cleanedUrl.contains("/gitkb/explain") -> {
+//                        """
+//                        {
+//                            "question": "$safeText",
+//                            "language": "$language",
+//                            "project_name": "$projectName",
+//                            "branch_name": "$branchName"
+//                        }
+//                        """.trimIndent()
+//                    }
+//
+//                    else -> {
+//                        """
+//                        {
+//                            "code": "$safeText",
+//                            "language": "$language",
+//                            "project_name": "$projectName",
+//                            "branch_name": "$branchName"
+//                        }
+//                        """.trimIndent()
+//                    }
+//                }
+//
+//                connection.outputStream.use { os ->
+//                    os.write(jsonInputString.toByteArray(StandardCharsets.UTF_8))
+//                    os.flush()
+//                }
+//            }
+            else {
                 connection.setRequestProperty("Content-Type", "application/json")
 
                 val jsonInputString = when {
                     cleanedUrl.endsWith("/genieapi/assistant/code-generation") -> {
                         """
-                        {
-                            "prompt": "$safeText",
-                            "language": "$language",
-                            "project_name": "$projectName",
-                            "branch_name": "$branchName"
-                        }
-                        """.trimIndent()
+            {
+                "prompt": "$safeText",
+                "language": "$language",
+                "project_name": "$projectName",
+                "branch_name": "$branchName"
+            }
+            """.trimIndent()
                     }
 
                     cleanedUrl.contains("/gitkb/get_code") || cleanedUrl.contains("/gitkb/explain") -> {
                         """
-                        {
-                            "question": "$safeText",
-                            "language": "$language",
-                            "project_name": "$projectName",
-                            "branch_name": "$branchName"
-                        }
-                        """.trimIndent()
+            {
+                "question": "$safeText",
+                "language": "$language",
+                "project_name": "$projectName",
+                "branch_name": "$branchName"
+            }
+            """.trimIndent()
+                    }
+
+                    cleanedUrl.endsWith("/process-query") -> {
+                        """
+            {
+                "query": "$safeText",
+                "session_id": "2568ac9e-157f-4a9f-852a-83caabe94dc3",
+                "partition_name": "",
+                "partition_value": "",
+                "dbquery": false
+            }
+            """.trimIndent()
                     }
 
                     else -> {
                         """
-                        {
-                            "code": "$safeText",
-                            "language": "$language",
-                            "project_name": "$projectName",
-                            "branch_name": "$branchName"
-                        }
-                        """.trimIndent()
+            {
+                "code": "$safeText",
+                "language": "$language",
+                "project_name": "$projectName",
+                "branch_name": "$branchName"
+            }
+            """.trimIndent()
                     }
                 }
 
@@ -97,6 +155,7 @@ object ApiUtils {
                     os.flush()
                 }
             }
+
 
             if (connection.responseCode == HttpURLConnection.HTTP_OK) {
                 connection.inputStream.bufferedReader().use { it.readText() }

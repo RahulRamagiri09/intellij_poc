@@ -11,7 +11,7 @@ object JsonGetResponseFromKB {
 
         return try {
             val jsonElement = Json.parseToJsonElement(response).jsonObject
-            jsonElement["text2"]?.jsonPrimitive?.content ?: "No Get Code added."
+            jsonElement["response"]?.jsonPrimitive?.content ?: "No Get Code added."
         } catch (e: Exception) {
             "Invalid JSON response: ${e.message} (Response: $response)"
         }

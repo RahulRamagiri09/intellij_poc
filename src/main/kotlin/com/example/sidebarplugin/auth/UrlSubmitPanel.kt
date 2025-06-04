@@ -126,8 +126,8 @@ class UrlSubmitPanel(private val project: Project) : JPanel() {
         add(containerPanel, constraints)
 
         // Default URL Value
-        urlTextField.text = "http://34.46.36.105:3000/genieapi"
-        kbUrlTextField.text = "http://34.58.68.131/kbmsapi"
+//        urlTextField.text = "http://34.46.36.105:3000/genieapi"
+//        kbUrlTextField.text = "http://34.58.68.131/kbmsapi"
 
         // Button Action Listener
         submitButton.addActionListener {

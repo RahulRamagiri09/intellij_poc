@@ -123,7 +123,7 @@ object KBActions {
         val branchName = gitInfo?.currentBranch ?: "NA"
 
         val apiUrl = when (KBType) {
-            "Get Response From KB" -> "$kbStoredUrl/answer"
+            "Get Response From KB" -> "$kbStoredUrl/process-query"
             else -> {
                 JOptionPane.showMessageDialog(null, "Invalid KBMS type selected.")
                 return
