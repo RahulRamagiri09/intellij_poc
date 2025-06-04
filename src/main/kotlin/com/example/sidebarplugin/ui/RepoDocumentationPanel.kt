@@ -459,6 +459,17 @@ fun createRepoDocumentationUI(): JPanel {
     scrollPane.isVisible = false
     mainPanel.add(scrollPane)
 
+//    val buttonPanel = JPanel()
+//    buttonPanel.layout = BoxLayout(buttonPanel, BoxLayout.X_AXIS)
+//    buttonPanel.alignmentX = Component.LEFT_ALIGNMENT
+//
+//    val submitButton = JButton("Submit")
+//    submitButton.alignmentX = Component.LEFT_ALIGNMENT
+//
+//    buttonPanel.add(submitButton)
+//    mainPanel.add(Box.createVerticalStrut(25))
+//    mainPanel.add(buttonPanel)
+
     val buttonPanel = JPanel()
     buttonPanel.layout = BoxLayout(buttonPanel, BoxLayout.X_AXIS)
     buttonPanel.alignmentX = Component.LEFT_ALIGNMENT
@@ -466,9 +477,25 @@ fun createRepoDocumentationUI(): JPanel {
     val submitButton = JButton("Submit")
     submitButton.alignmentX = Component.LEFT_ALIGNMENT
 
+    val clearButton = JButton("Clear View")
+    clearButton.alignmentX = Component.LEFT_ALIGNMENT
+    clearButton.addActionListener {
+        mainPanel.removeAll()
+        mainPanel.revalidate()
+        mainPanel.repaint()
+
+        val clearedLabel = JLabel("Please select a command to view the response")
+        clearedLabel.font = clearedLabel.font.deriveFont(16f)
+        mainPanel.add(clearedLabel)
+    }
+
     buttonPanel.add(submitButton)
+    buttonPanel.add(Box.createHorizontalStrut(10)) // spacing
+    buttonPanel.add(clearButton)
+
     mainPanel.add(Box.createVerticalStrut(25))
     mainPanel.add(buttonPanel)
+
 
 
     val client = OkHttpClient()

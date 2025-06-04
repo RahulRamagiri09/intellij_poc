@@ -33,15 +33,21 @@ object DropDownMenuReview {
             dropdownPanel.add(label)
         }
 
-        return dropdownPanel
+        val scrollPane = JScrollPane(dropdownPanel)
+        val container = JPanel(BorderLayout())
+        container.add(scrollPane, BorderLayout.CENTER)
+
+        return container
     }
 }
+
+
 
 object LanguageDetectUtils {
     fun mapFileExtensionToLanguages(fileExtension: String): String {
         return when (fileExtension.lowercase()) {
-            "py" -> "Python"
-            "java" -> "Java"
+            "py" -> "python"
+            "java" -> "java"
             "kt" -> "Kotlin"
             "js" -> "JavaScript"
             "ts" -> "TypeScript"

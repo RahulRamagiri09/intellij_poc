@@ -75,7 +75,7 @@ object JsonExplain {
 
             // ======= Download PDF Button =======
             val buttonPanel = JPanel().apply {
-                layout = FlowLayout(FlowLayout.CENTER)
+                layout = FlowLayout(FlowLayout.LEFT)
                 background = JsonExplain.DARK_BG
             }
 
@@ -112,7 +112,7 @@ object JsonExplain {
     private fun saveAsPdf(jsonText: String) {
         val fileChooser = JFileChooser().apply {
             dialogTitle = "Save Assistant PDF"
-            selectedFile = File("explain_gitKB_report.pdf")
+            selectedFile = File("Explain from gitKB.pdf")
         }
 
         val userSelection = fileChooser.showSaveDialog(null)
@@ -232,48 +232,92 @@ object JsonExplain {
     }
 
     private fun createCard(label: String?, content: String): JPanel {
-        val card = JPanel()
-        card.layout = BoxLayout(card, BoxLayout.Y_AXIS)
-        card.border = BorderFactory.createLineBorder(LIGHT_TEXT)
-        card.background = DARK_PANEL
-
-        card.add(createLabeledTextArea(label, content))
-        return card
-    }
-
-    private fun createLabeledTextArea(label: String?, content: String, height: Int = 120): JPanel {
-        val panel = JPanel()
-        panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
+        val panel = JPanel(GridBagLayout())
         panel.background = DARK_PANEL
+        panel.border = BorderFactory.createLineBorder(LIGHT_TEXT)
+
+        val gbc = GridBagConstraints().apply {
+            gridx = 0
+            gridy = 0
+            anchor = GridBagConstraints.WEST
+            insets = Insets(5, 10, 5, 10)
+            fill = GridBagConstraints.HORIZONTAL
+            weightx = 1.0
+        }
 
         if (!label.isNullOrBlank()) {
             val labelComponent = JLabel(label).apply {
                 font = Font("Arial", Font.BOLD, 14)
                 foreground = LIGHT_TEXT
             }
-            panel.add(labelComponent)
-            panel.add(Box.createVerticalStrut(5))
+            panel.add(labelComponent, gbc)
+            gbc.gridy++
         }
 
         val textArea = JTextArea(content).apply {
             lineWrap = true
             wrapStyleWord = true
             isEditable = false
-            font = Font("Arial",  java.awt.Font.PLAIN,13)
+            font = Font("Arial", java.awt.Font.PLAIN, 13)
             background = DARK_TEXTAREA
             foreground = LIGHT_TEXT
             border = BorderFactory.createEmptyBorder(8, 8, 8, 8)
         }
 
         val scrollPane = JBScrollPane(textArea).apply {
-            preferredSize = Dimension(850, height)  // Use dynamic height here
+            preferredSize = Dimension(850, 120)
             verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
             background = DARK_PANEL
         }
 
-        panel.add(scrollPane)
+        panel.add(scrollPane, gbc)
         return panel
     }
+
+
+    private fun createLabeledTextArea(label: String?, content: String, height: Int = 120): JPanel {
+        val panel = JPanel(GridBagLayout())
+        panel.background = DARK_PANEL
+        panel.border = BorderFactory.createLineBorder(LIGHT_TEXT)
+
+        val gbc = GridBagConstraints().apply {
+            gridx = 0
+            gridy = 0
+            anchor = GridBagConstraints.WEST
+            insets = Insets(5, 10, 5, 10)
+            fill = GridBagConstraints.HORIZONTAL
+            weightx = 1.0
+        }
+
+        if (!label.isNullOrBlank()) {
+            val labelComponent = JLabel(label).apply {
+                font = Font("Arial", Font.BOLD, 14)
+                foreground = LIGHT_TEXT
+            }
+            panel.add(labelComponent, gbc)
+            gbc.gridy++
+        }
+
+        val textArea = JTextArea(content).apply {
+            lineWrap = true
+            wrapStyleWord = true
+            isEditable = false
+            font = Font("Arial", java.awt.Font.PLAIN,13)
+            background = DARK_TEXTAREA
+            foreground = LIGHT_TEXT
+            border = BorderFactory.createEmptyBorder(8, 8, 8, 8)
+        }
+
+        val scrollPane = JBScrollPane(textArea).apply {
+            preferredSize = Dimension(850, height)
+            verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
+            background = DARK_PANEL
+        }
+
+        panel.add(scrollPane, gbc)
+        return panel
+    }
+
 
 
     private fun errorPanel(message: String): JPanel {

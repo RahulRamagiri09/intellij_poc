@@ -171,11 +171,11 @@ fun renderResultsPanel(resultsJson: String, language: String = ""): JPanel {
 
         val buttonPanel = JPanel().apply {
             layout = BoxLayout(this, BoxLayout.X_AXIS)
-            background = DARK_BG
+            background = JsonFilewiseUnitTestCode.DARK_BG
             alignmentX = Component.LEFT_ALIGNMENT
         }
 
-        val downloadButton = JButton("Download PDF").apply {
+        val downloadButton = JButton("Download as PDF").apply {
             background = Color(100, 100, 255)
             foreground = Color.WHITE
             font = AwtFont("Arial", AwtFont.BOLD, 14)
@@ -227,7 +227,10 @@ fun renderResultsPanel(resultsJson: String, language: String = ""): JPanel {
                         selected.forEach { testObj ->
                             val description = testObj["description"]?.jsonPrimitive?.content ?: "N/A"
                             val data = testObj["data"]?.jsonArray?.joinToString(", ") { it.toString() } ?: "N/A"
-                            val testcase = testObj["testcase"]?.jsonPrimitive?.content ?: "N/A"
+//                            val testcase = testObj["testcase"]?.jsonPrimitive?.content ?: "N/A"
+
+                            val rawTestCase = testObj["testcase"]?.jsonPrimitive?.content ?: "N/A"
+                            val testcase = rawTestCase.replace("\\n", "\n")
 
                             val commentPrefix = when (language.lowercase()) {
                                 "python" -> "#"
@@ -288,14 +291,17 @@ fun renderResultsPanel(resultsJson: String, language: String = ""): JPanel {
                 spacingAfter = 20f
             })
 
+
             val table = PdfPTable(5)
             table.widthPercentage = 100f
             table.setWidths(floatArrayOf(2f, 2f, 3f, 1f, 1.5f)) // Custom column widths
 
+            val headerBgColor = BaseColor(0xE9, 0xE5, 0xE5)
+
             val headers = listOf("Description", "Data", "Test Case", "Confidence Score", "Intervention Needed")
             headers.forEach {
                 val cell = PdfPCell(Phrase(it, headerFont)).apply {
-                    backgroundColor = BaseColor.LIGHT_GRAY
+                    backgroundColor = headerBgColor
                     horizontalAlignment = Element.ALIGN_CENTER
 
                 }

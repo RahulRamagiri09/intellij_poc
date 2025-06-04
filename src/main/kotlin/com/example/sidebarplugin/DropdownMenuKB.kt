@@ -33,6 +33,12 @@ object DropdownMenuKB {
             dropdownPanel.add(label)
         }
 
-        return dropdownPanel
+        val scrollPane = JScrollPane(dropdownPanel)
+        // No custom border to keep IntelliJ default border
+
+        val container = JPanel(BorderLayout())
+        container.add(scrollPane, BorderLayout.CENTER)
+
+        return container
     }
 }

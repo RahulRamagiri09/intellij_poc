@@ -20,7 +20,7 @@ class SidebarRightToolWindow(private val project: Project, private val toolWindo
 
         // Initial centered message
         val centerPanel = JPanel(GridBagLayout())
-        val messageLabel = JLabel("Select an assistant feature to see the response.")
+        val messageLabel = JLabel("Please select a command to view the response")
         centerPanel.add(messageLabel)
         contentPanel.add(centerPanel, BorderLayout.CENTER)
 
@@ -44,7 +44,7 @@ class SidebarRightToolWindow(private val project: Project, private val toolWindo
             contentPanel.removeAll()
 
             val centerPanel = JPanel(GridBagLayout())
-            val messageLabel = JLabel("Select an assistant feature to see the response.")
+            val messageLabel = JLabel("Please select a command to view the response")
             centerPanel.add(messageLabel)
 
             contentPanel.add(centerPanel, BorderLayout.CENTER)

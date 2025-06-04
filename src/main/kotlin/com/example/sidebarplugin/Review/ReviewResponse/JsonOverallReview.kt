@@ -68,7 +68,7 @@ object JsonOverallReview {
             }
 
             // ======= PDF Button =======
-            val downloadButton = JButton("Download PDF").apply {
+            val downloadButton = JButton("Download as PDF").apply {
                 alignmentX = Component.LEFT_ALIGNMENT
                 background = Color(100, 100, 255)
                 foreground = Color.WHITE
@@ -76,6 +76,7 @@ object JsonOverallReview {
                 addActionListener {
                     val fileChooser = JFileChooser().apply {
                         dialogTitle = "Save PDF"
+                        selectedFile = File("Overall Review.pdf")
                         fileFilter = FileNameExtensionFilter("PDF Documents", "pdf")
                     }
                     val userSelection = fileChooser.showSaveDialog(null)

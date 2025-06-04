@@ -32,7 +32,15 @@ class DropDownMenuDocumentation {
                 dropdownPanel.add(label)
             }
 
-            return dropdownPanel
+            // Wrap dropdownPanel in a JScrollPane
+            val scrollPane = JScrollPane(dropdownPanel)
+            // Use default IntelliJ Look & Feel border (no custom border set)
+
+            // Container panel to return
+            val container = JPanel(BorderLayout())
+            container.add(scrollPane, BorderLayout.CENTER)
+
+            return container
         }
     }
 }
