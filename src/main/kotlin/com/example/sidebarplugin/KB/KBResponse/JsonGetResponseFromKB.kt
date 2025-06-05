@@ -60,28 +60,6 @@ object JsonGetResponseFromKB {
         val scrollPane = JScrollPane(textArea)
         scrollPane.verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
 
-//        val downloadButton = JButton("Download PDF")
-//        downloadButton.addActionListener {
-//            val fileChooser = JFileChooser()
-//            fileChooser.dialogTitle = "Choose location to save PDF"
-//            fileChooser.selectedFile = java.io.File("kb_response.pdf") // Default file name
-//
-//            val userSelection = fileChooser.showSaveDialog(panel)
-//            if (userSelection == JFileChooser.APPROVE_OPTION) {
-//                val fileToSave = fileChooser.selectedFile
-//                try {
-//                    val document = com.itextpdf.text.Document()
-//                    com.itextpdf.text.pdf.PdfWriter.getInstance(document, FileOutputStream(fileToSave))
-//                    document.open()
-//                    document.add(com.itextpdf.text.Paragraph(responseText))
-//                    document.close()
-//
-//                    JOptionPane.showMessageDialog(null, "PDF saved to: ${fileToSave.absolutePath}")
-//                } catch (e: Exception) {
-//                    JOptionPane.showMessageDialog(null, "Error saving PDF: ${e.message}")
-//                }
-//            }
-//        }
         val downloadButton = JButton("Download PDF").apply {
             background = Color(100, 100, 255)
             foreground = Color.WHITE
@@ -101,7 +79,15 @@ object JsonGetResponseFromKB {
                         val document = com.itextpdf.text.Document()
                         com.itextpdf.text.pdf.PdfWriter.getInstance(document, FileOutputStream(fileToSave))
                         document.open()
+//                        document.add(com.itextpdf.text.Paragraph(responseText))
+                        val titleFont = com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.HELVETICA, 16f, com.itextpdf.text.Font.BOLD)
+                        val title = com.itextpdf.text.Paragraph("Get Response From KBMS", titleFont)
+                        title.spacingAfter = 20f
+                        document.add(title)
+
                         document.add(com.itextpdf.text.Paragraph(responseText))
+
+
                         document.close()
 
                         JOptionPane.showMessageDialog(null, "PDF saved to: ${fileToSave.absolutePath}")
