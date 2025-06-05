@@ -101,7 +101,7 @@ object JsonOverallReview {
             val outerScroll = JBScrollPane(mainPanel).apply {
                 verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
                 horizontalScrollBarPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
-                preferredSize = Dimension(1200, 800)
+                preferredSize = Dimension(1100, 800)
                 background = DARK_BG
             }
 
@@ -184,20 +184,29 @@ object JsonOverallReview {
     }
 
     private fun generatePdf(json: JsonObject, file: File) {
-        val document = Document(PageSize.A4, 40f, 40f, 50f, 50f)
+        val document = Document(PageSize.A4.rotate())
         PdfWriter.getInstance(document, file.outputStream())
         document.open()
 
         // Convert HEX color #E9E5E5 to BaseColor
+        val headingFont = Font(Font.FontFamily.HELVETICA, 14f, Font.BOLD)
+        val titleFont = Font(Font.FontFamily.HELVETICA, 17f, Font.BOLD)
         val headerBgColor = BaseColor(0xE9, 0xE5, 0xE5)
+        val cellFont = Font(Font.FontFamily.HELVETICA, 12f, Font.NORMAL)
 
-        val titleFont = Font(Font.FontFamily.HELVETICA, 14f, Font.BOLD, BaseColor.DARK_GRAY)  // reduced from 18f
-        val headerFont = Font(Font.FontFamily.HELVETICA, 11f, Font.BOLD)                      // reduced from 14f
-        val cellFont = Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL)                      // reduced from 12f
+        fun addMainTitle(title: String) {
+            val titlePara = Paragraph(title, titleFont).apply {
+                alignment = Element.ALIGN_CENTER
+                spacingAfter = 12f
+            }
+            document.add(titlePara)
+        }
 
-        fun addTitle(title: String) {
-            val titlePara = Paragraph(title, titleFont)
-            titlePara.spacingAfter = 12f
+        fun addSectionTitle(title: String) {
+            val titlePara = Paragraph(title, headingFont).apply {
+                alignment = Element.ALIGN_LEFT
+                spacingAfter = 12f
+            }
             document.add(titlePara)
         }
 
@@ -208,7 +217,7 @@ object JsonOverallReview {
 
             val headers = listOf("Quality", "Severity", "Remarks")
             headers.forEach {
-                val cell = PdfPCell(Phrase(it, headerFont))
+                val cell = PdfPCell(Phrase(it, headingFont))
                 cell.backgroundColor = headerBgColor
                 cell.setPadding(6f)
                 table.addCell(cell)
@@ -224,14 +233,14 @@ object JsonOverallReview {
         }
 
         fun addIssuesTable(category: String, issues: JsonArray) {
-            addTitle(category)
+            addSectionTitle(category)
             val table = PdfPTable(floatArrayOf(1f, 2f, 2f, 1f))
             table.widthPercentage = 100f
             table.spacingAfter = 15f
 
             val headers = listOf("Identification", "Explanation", "Fix", "Severity")
             headers.forEach {
-                val cell = PdfPCell(Phrase(it, headerFont))
+                val cell = PdfPCell(Phrase(it, headingFont))
                 cell.backgroundColor = headerBgColor
                 cell.setPadding(6f)
                 table.addCell(cell)
@@ -255,15 +264,17 @@ object JsonOverallReview {
             document.add(table)
         }
 
+        addMainTitle("Overall Review")
+
         // ===== Summary Section =====
-        addTitle("Summary")
+        addSectionTitle("Summary:")
         val quality = json["quality"]?.jsonPrimitive?.content ?: "N/A"
         val severity = json["overallSeverity"]?.jsonPrimitive?.content ?: "N/A"
         val remarks = json["remarks"]?.jsonPrimitive?.content ?: "N/A"
         addSummaryTable(quality, severity, remarks)
 
         // ===== Issues Section =====
-        addTitle("Issues")
+        addSectionTitle("Issues:")
         val issues = json["issues"]?.jsonObject
         val categoryOrder = listOf("Quality", "Performance", "Security", "Organization Standards", "CK Metrics", "Syntax")
         categoryOrder.forEach { category ->

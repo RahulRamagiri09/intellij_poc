@@ -133,7 +133,7 @@ object JsonExplainCode {
             val outerScroll = JBScrollPane(mainPanel).apply {
                 verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
                 horizontalScrollBarPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
-                preferredSize = Dimension(900, 800)
+                preferredSize = Dimension(1100, 800)
                 background = DARK_BG
             }
 
@@ -169,17 +169,21 @@ object JsonExplainCode {
             document.open()
 
             val headingFont = Font(Font.FontFamily.HELVETICA, 14f, Font.BOLD)
+            val titleFont = Font(Font.FontFamily.HELVETICA, 17f, Font.BOLD)
             val labelFont = Font(Font.FontFamily.HELVETICA, 12f, Font.BOLD)
             val normalFont = Font(Font.FontFamily.HELVETICA, 11f)
             val grayBg = BaseColor(233, 229, 229)
 
-            document.add(Paragraph("Explain Assistant Feature", headingFont))
-            document.add(Chunk.NEWLINE)
+            val title = Paragraph("Explain Code Assistant", titleFont).apply {
+                alignment = Element.ALIGN_CENTER
+                spacingAfter = 20f
+            }
+            document.add(title)
 
             val jsonElement = Json.parseToJsonElement(jsonText).jsonObject
 
             // Quality & Remarks
-            document.add(Paragraph("Summary", headingFont))
+            document.add(Paragraph("Summary:", headingFont))
             document.add(Paragraph(" "))
             val quality = extractArray(jsonElement["quality"]).joinToString(", ")
             val remarks = jsonElement["remarks"]?.jsonPrimitive?.content ?: "N/A"

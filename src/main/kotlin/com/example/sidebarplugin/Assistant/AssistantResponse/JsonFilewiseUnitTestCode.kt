@@ -283,12 +283,14 @@ fun renderResultsPanel(resultsJson: String, language: String = ""): JPanel {
             PdfWriter.getInstance(document, file.outputStream())
             document.open()
 
-            val titleFont = Font(Font.FontFamily.HELVETICA, 18f, Font.BOLD)
+            val titleFont = Font(Font.FontFamily.HELVETICA, 17f, Font.BOLD)
             val headerFont = Font(Font.FontFamily.HELVETICA, 12f, Font.BOLD)
             val cellFont = Font(Font.FontFamily.HELVETICA, 11f)
 
             document.add(Paragraph("Filewise Unit Test Cases", titleFont).apply {
+                alignment = Element.ALIGN_CENTER
                 spacingAfter = 20f
+
             })
 
 
@@ -340,7 +342,7 @@ fun renderResultsPanel(resultsJson: String, language: String = ""): JPanel {
         val outerScroll = JBScrollPane(contentPanel).apply {
             verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
             horizontalScrollBarPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
-            preferredSize = Dimension(1200, 800)
+            preferredSize = Dimension(1100, 800)
             background = DARK_BG
         }
 
@@ -400,7 +402,7 @@ fun renderResultsPanel(resultsJson: String, language: String = ""): JPanel {
         }
 
         val scrollPane = JBScrollPane(textArea).apply {
-            preferredSize = Dimension(1100, height)
+            preferredSize = Dimension(1000, height)
             verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
             background = DARK_PANEL
             border = BorderFactory.createEmptyBorder(0, 0, 0, 0)

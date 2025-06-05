@@ -85,7 +85,7 @@ object JsonUnitTestCode {
 
             pdfButton.addActionListener {
                 createPdf(details, testCases)
-                JOptionPane.showMessageDialog(null, "PDF saved as unit_test_report.pdf")
+//                JOptionPane.showMessageDialog(null, "PDF saved as unit_test_report.pdf")
             }
 
             mainPanel.add(Box.createVerticalStrut(20))
@@ -95,7 +95,7 @@ object JsonUnitTestCode {
             val outerScroll = JBScrollPane(mainPanel).apply {
                 verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
                 horizontalScrollBarPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
-                preferredSize = Dimension(1200, 800)
+                preferredSize = Dimension(1100, 800)
                 background = DARK_BG
             }
 
@@ -130,14 +130,20 @@ object JsonUnitTestCode {
                 PdfWriter.getInstance(document, FileOutputStream(filePath))
                 document.open()
 
-                val headingFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18f)
+                val headingFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14f)
+                val titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 17f)
                 val labelFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12f)
                 val contentFont = FontFactory.getFont(FontFactory.HELVETICA, 12f)
-
                 val headerBgColor = Color(233, 229, 229)
 
+                val title = Paragraph("Unit Test Code Assistant", titleFont).apply {
+                    alignment = Element.ALIGN_CENTER
+                    spacingAfter = 20f
+                }
+                document.add(title)
+
                 // ====== Details Section ======
-                document.add(Paragraph("Details", headingFont))
+                document.add(Paragraph("Details:", headingFont))
                 document.add(Paragraph(" "))
 
                 val detailsTable = PdfPTable(2)
@@ -158,7 +164,7 @@ object JsonUnitTestCode {
                 document.add(Paragraph("\n\n"))
 
                 // ====== Unit Test Cases Table ======
-                document.add(Paragraph("Unit Test Cases", headingFont))
+                document.add(Paragraph("Unit Test Cases:", headingFont))
                 document.add(Paragraph(" "))
 
                 val unitTestTable = PdfPTable(5)
