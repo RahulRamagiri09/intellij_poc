@@ -22,7 +22,7 @@ object ApiUtils {
 
             val cleanedUrl = apiUrl.trim().trimEnd('/')
             val url = URL(cleanedUrl)
-//            val test = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJyYWh1bDk3QGdtYWlsLmNvbSIsInVzZXJJZCI6IjY4Mzk3NjhiMDFhZmI0YWEwMDI2NjE2MCIsImV4cCI6MTc1MTUyMjgyM30.Wzk3cpAYF5ObzDhCtuoYOTDRKiIX8wAkevtUF9sX7gE"
+//            val test = ""
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "POST"
             connection.setRequestProperty("Authorization", "Bearer $authToken")
