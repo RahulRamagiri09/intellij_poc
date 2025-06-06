@@ -220,15 +220,16 @@ class RegisterPanel(private val project: Project) : JPanel() {
         preferredSize = Dimension(200, 30)
         maximumSize = Dimension(200, 30)
     }
-    private val emailField = JTextField("rahul97@gmail.com", 20).apply {
+//    private val emailField = JTextField("rahul97@gmail.com", 20).apply {
+private val emailField = JTextField(20).apply {
         preferredSize = Dimension(200, 30)
         maximumSize = Dimension(200, 30)
     }
-    private val passwordField = JPasswordField("Test@123", 20).apply {
+    private val passwordField = JPasswordField(20).apply {
         preferredSize = Dimension(200, 30)
         maximumSize = Dimension(200, 30)
     }
-    private val confirmPasswordField = JPasswordField("Test@123", 20).apply {
+    private val confirmPasswordField = JPasswordField(20).apply {
         preferredSize = Dimension(200, 30)
         maximumSize = Dimension(200, 30)
     }
