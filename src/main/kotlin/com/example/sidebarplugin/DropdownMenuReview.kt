@@ -21,7 +21,7 @@ object DropDownMenuReview {
             val label = JLabel(item, iconMap[item], JLabel.LEFT)
             label.iconTextGap = 8
             label.alignmentX = Component.LEFT_ALIGNMENT
-            label.border = BorderFactory.createEmptyBorder(4, 4, 4, 4)
+            label.border = BorderFactory.createEmptyBorder(4, 0, 4, 4)
             label.cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
 
             label.addMouseListener(object : MouseAdapter() {
