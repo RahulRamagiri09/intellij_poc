@@ -73,7 +73,7 @@ object ReviewActions {
                     SwingUtilities.invokeLater {
                         loadingDialog.dispose()
                         when (processedContent) {
-                            is JPanel -> UIUtils.showResponsePanel(project, editor, processedContent) // Show JPanel for "Explain Code"
+                            is JPanel -> UIUtils.showResponsePanel(project, editor, processedContent, reviewType) // Show JPanel for "Explain Code"
                             is String -> UIUtils.showResponseDialog(project, editor, processedContent, selectedText) // Show JTextArea for others
                             else -> JOptionPane.showMessageDialog(null, "Unexpected response type.", "Error", JOptionPane.ERROR_MESSAGE)
                         }

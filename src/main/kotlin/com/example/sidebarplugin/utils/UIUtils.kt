@@ -76,12 +76,13 @@ object UIUtils {
         dialog.show()
     }
 
-    fun showResponsePanel(project: Project, editor: Editor?, responsePanel: JPanel) {
+    fun showResponsePanel(project: Project, editor: Editor?, responsePanel: JPanel, title: String) {
         if (editor == null) return
 
         val dialog = object : DialogWrapper(project, true) {
             init {
-                title = "Explanation"
+//                title = "Explanationss"
+                this.title = title
                 init()
             }
 

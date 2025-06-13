@@ -248,7 +248,7 @@ object KBActions {
                         }
 
                         when (processedContent) {
-                            is JPanel -> UIUtils.showResponsePanel(project, editor, processedContent)
+                            is JPanel -> UIUtils.showResponsePanel(project, editor, processedContent, KBType)
                             is String -> UIUtils.showSidebarResponse(project, editor, processedContent)
                             else -> JOptionPane.showMessageDialog(null, "Unexpected response type.", "Error", JOptionPane.ERROR_MESSAGE)
                         }

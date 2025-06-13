@@ -56,50 +56,6 @@ object ApiUtils {
                 }
 
             }
-
-//            else {
-//                connection.setRequestProperty("Content-Type", "application/json")
-//
-//                val jsonInputString = when {
-//                    cleanedUrl.endsWith("/genieapi/assistant/code-generation") -> {
-//                        """
-//                        {
-//                            "prompt": "$safeText",
-//                            "language": "$language",
-//                            "project_name": "$projectName",
-//                            "branch_name": "$branchName"
-//                        }
-//                        """.trimIndent()
-//                    }
-//
-//                    cleanedUrl.contains("/gitkb/get_code") || cleanedUrl.contains("/gitkb/explain") -> {
-//                        """
-//                        {
-//                            "question": "$safeText",
-//                            "language": "$language",
-//                            "project_name": "$projectName",
-//                            "branch_name": "$branchName"
-//                        }
-//                        """.trimIndent()
-//                    }
-//
-//                    else -> {
-//                        """
-//                        {
-//                            "code": "$safeText",
-//                            "language": "$language",
-//                            "project_name": "$projectName",
-//                            "branch_name": "$branchName"
-//                        }
-//                        """.trimIndent()
-//                    }
-//                }
-//
-//                connection.outputStream.use { os ->
-//                    os.write(jsonInputString.toByteArray(StandardCharsets.UTF_8))
-//                    os.flush()
-//                }
-//            }
             else {
                 connection.setRequestProperty("Content-Type", "application/json")
 
