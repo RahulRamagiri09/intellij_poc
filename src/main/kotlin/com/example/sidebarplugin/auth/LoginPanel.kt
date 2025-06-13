@@ -16,13 +16,13 @@ import com.intellij.openapi.components.ServiceManager
 
 
 class LoginPanel(private val project: Project) : JPanel() {
-//    private val emailField = JTextField("rahul97@gmail.com", 20).apply {
-private val emailField = JTextField(20).apply {
+    //    private val emailField = JTextField("rahul97@gmail.com", 20).apply {
+    private val emailField = JTextField(20).apply {
         preferredSize = Dimension(200, 30)
         maximumSize = Dimension(200, 30)
     }
-//    private val passwordField = JPasswordField("Test@123", 20).apply {
-private val passwordField = JPasswordField(20).apply {
+    //    private val passwordField = JPasswordField("Test@123", 20).apply {
+    private val passwordField = JPasswordField(20).apply {
         preferredSize = Dimension(200, 30)
         maximumSize = Dimension(200, 30)
     }
@@ -101,7 +101,7 @@ private val passwordField = JPasswordField(20).apply {
             addActionListener { replacePanelWithRegisterPanel() }
         }
 
-       // Use BoxLayout to ensure side-by-side alignment
+        // Use BoxLayout to ensure side-by-side alignment
         val registerPanel = JPanel()
         registerPanel.layout = BoxLayout(registerPanel, BoxLayout.X_AXIS)
         registerPanel.maximumSize = Dimension(Int.MAX_VALUE, 30) // Prevent shrinking below 1 line

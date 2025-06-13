@@ -42,7 +42,7 @@ object JsonOverallReview {
             // ======= Issues =======
             mainPanel.add(createSectionLabel("Issues :"))
             val issues = jsonElement["issues"]?.jsonObject
-            val categoryOrder = listOf("Quality", "Performance", "Security", "Organization Standards", "CK Metrics", "Syntax")
+            val categoryOrder = listOf("Quality", "Performance", "Security", "Organization Standards", "CK Metrics", "Syntax", "Cloud Violations")
 
             categoryOrder.forEach { category ->
                 val issuesArray = issues?.get(category)?.jsonArray
@@ -61,6 +61,15 @@ object JsonOverallReview {
                         mainPanel.add(createCard("Issue", issueData[0]))
                         mainPanel.add(createCard("Explanation", issueData[1]))
                         mainPanel.add(createCard("Fix", issueData[2]))
+
+                        // Add violation type and policy reference for Cloud Violations right after Fix
+                        if (category == "Cloud Violations") {
+                            val violationType = issueObj["violationType"]?.jsonPrimitive?.content ?: "N/A"
+                            val policyReference = issueObj["policyReference"]?.jsonPrimitive?.content ?: "N/A"
+                            mainPanel.add(createCard("Violation Type", violationType, height = 40))
+                            mainPanel.add(createCard("Policy Reference", policyReference, height = 40))
+                        }
+
                         mainPanel.add(createCard("Severity", issueData[3], height = 40))
                         mainPanel.add(Box.createVerticalStrut(15))
                     }
@@ -234,11 +243,16 @@ object JsonOverallReview {
 
         fun addIssuesTable(category: String, issues: JsonArray) {
             addSectionTitle(category)
-            val table = PdfPTable(floatArrayOf(1f, 2f, 2f, 1f))
+            val table = PdfPTable(if (category == "Cloud Violations") 6 else 4)
             table.widthPercentage = 100f
             table.spacingAfter = 15f
 
-            val headers = listOf("Identification", "Explanation", "Fix", "Severity")
+            val headers = if (category == "Cloud Violations") {
+                listOf("Identification", "Explanation", "Fix", "Violation Type", "Policy Reference", "Severity")
+            } else {
+                listOf("Identification", "Explanation", "Fix", "Severity")
+            }
+            
             headers.forEach {
                 val cell = PdfPCell(Phrase(it, headingFont))
                 cell.backgroundColor = headerBgColor
@@ -248,12 +262,23 @@ object JsonOverallReview {
 
             for (item in issues) {
                 val obj = item.jsonObject
-                val row = listOf(
-                    obj["identification"]?.jsonPrimitive?.content ?: "N/A",
-                    obj["explanation"]?.jsonPrimitive?.content ?: "N/A",
-                    obj["fix"]?.jsonPrimitive?.content ?: "N/A",
-                    obj["severity"]?.jsonPrimitive?.content ?: "N/A"
-                )
+                val row = if (category == "Cloud Violations") {
+                    listOf(
+                        obj["identification"]?.jsonPrimitive?.content ?: "N/A",
+                        obj["explanation"]?.jsonPrimitive?.content ?: "N/A",
+                        obj["fix"]?.jsonPrimitive?.content ?: "N/A",
+                        obj["violationType"]?.jsonPrimitive?.content ?: "N/A",
+                        obj["policyReference"]?.jsonPrimitive?.content ?: "N/A",
+                        obj["severity"]?.jsonPrimitive?.content ?: "N/A"
+                    )
+                } else {
+                    listOf(
+                        obj["identification"]?.jsonPrimitive?.content ?: "N/A",
+                        obj["explanation"]?.jsonPrimitive?.content ?: "N/A",
+                        obj["fix"]?.jsonPrimitive?.content ?: "N/A",
+                        obj["severity"]?.jsonPrimitive?.content ?: "N/A"
+                    )
+                }
                 row.forEach {
                     val cell = PdfPCell(Phrase(it, cellFont))
                     cell.setPadding(6f)
@@ -276,7 +301,7 @@ object JsonOverallReview {
         // ===== Issues Section =====
         addSectionTitle("Issues:")
         val issues = json["issues"]?.jsonObject
-        val categoryOrder = listOf("Quality", "Performance", "Security", "Organization Standards", "CK Metrics", "Syntax")
+        val categoryOrder = listOf("Quality", "Performance", "Security", "Organization Standards", "CK Metrics", "Syntax", "Cloud Violations")
         categoryOrder.forEach { category ->
             val issueList = issues?.get(category)?.jsonArray
             if (issueList != null && issueList.isNotEmpty()) {
