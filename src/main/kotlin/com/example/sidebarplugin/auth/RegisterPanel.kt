@@ -13,6 +13,8 @@ import javax.swing.JOptionPane
 import com.intellij.openapi.components.ServiceManager
 import kotlinx.serialization.encodeToString
 import com.example.sidebarplugin.SidebarToolWindow
+import com.intellij.openapi.util.IconLoader
+
 
 class RegisterPanel(private val project: Project) : JPanel() {
     private val usernameField = JTextField(20).apply {
@@ -23,8 +25,52 @@ class RegisterPanel(private val project: Project) : JPanel() {
         preferredSize = Dimension(200, 30)
         maximumSize = Dimension(200, 30)
     }
-//    private val emailField = JTextField("rahul97@gmail.com", 20).apply {
-private val emailField = JTextField(20).apply {
+
+    private fun addPasswordField(label: String, field: JPasswordField, constraints: GridBagConstraints, row: Int) {
+        constraints.gridx = 0
+        constraints.gridy = row
+        add(JLabel(label), constraints)
+
+        constraints.gridx = 1
+
+        val passwordPanel = JPanel(BorderLayout())
+        passwordPanel.maximumSize = Dimension(200, 30)
+        passwordPanel.preferredSize = Dimension(200, 30)
+
+        passwordPanel.add(field, BorderLayout.CENTER)
+
+        val eyeOpenIcon = IconLoader.getIcon("/icons/eyeOpen.svg", javaClass)
+        val eyeClosedIcon = IconLoader.getIcon("/icons/eyeClose.svg", javaClass)
+
+        val eyeButton = JButton(eyeClosedIcon).apply {
+            preferredSize = Dimension(40, 30)
+            isFocusPainted = false
+            isBorderPainted = false
+            isContentAreaFilled = false
+            toolTipText = "Show/Hide Password"
+        }
+
+        var isPasswordVisible = false
+
+        eyeButton.addActionListener {
+            isPasswordVisible = !isPasswordVisible
+            if (isPasswordVisible) {
+                field.echoChar = 0.toChar()
+                eyeButton.icon = eyeOpenIcon
+            } else {
+                field.echoChar = '•'
+                eyeButton.icon = eyeClosedIcon
+            }
+        }
+
+        field.echoChar = '•'
+        passwordPanel.add(eyeButton, BorderLayout.EAST)
+        add(passwordPanel, constraints)
+    }
+
+
+    //    private val emailField = JTextField("rahul97@gmail.com", 20).apply {
+    private val emailField = JTextField(20).apply {
         preferredSize = Dimension(200, 30)
         maximumSize = Dimension(200, 30)
     }
@@ -64,8 +110,11 @@ private val emailField = JTextField(20).apply {
         addField("Username:", usernameField, constraints, 1)
         addField("Full Name:", fullNameField, constraints, 2)
         addField("Email:", emailField, constraints, 3)
-        addField("Password:", passwordField, constraints, 4)
-        addField("Confirm Password:", confirmPasswordField, constraints, 5)
+//        addField("Password:", passwordField, constraints, 4)
+//        addField("Confirm Password:", confirmPasswordField, constraints, 5)
+        addPasswordField("Password:", passwordField, constraints, 4)
+        addPasswordField("Confirm Password:", confirmPasswordField, constraints, 5)
+
         addField("Company Name:", companyNameField, constraints, 6)
 
         // Register Button

@@ -13,7 +13,7 @@ import kotlinx.serialization.json.*
 import java.util.Base64
 import javax.swing.JOptionPane
 import com.intellij.openapi.components.ServiceManager
-
+import com.intellij.openapi.util.IconLoader
 
 class LoginPanel(private val project: Project) : JPanel() {
     //    private val emailField = JTextField("rahul97@gmail.com", 20).apply {
@@ -46,6 +46,10 @@ class LoginPanel(private val project: Project) : JPanel() {
             fill = GridBagConstraints.HORIZONTAL
         }
 
+        val eyeOpenIcon = IconLoader.getIcon("/icons/eyeOpen.svg", javaClass)
+        val eyeClosedIcon = IconLoader.getIcon("/icons/eyeClose.svg", javaClass)
+
+
         // Add the title panel first
         constraints.gridx = 0
         constraints.gridy = 0
@@ -70,9 +74,87 @@ class LoginPanel(private val project: Project) : JPanel() {
         add(JLabel("Password:"), constraints)
 
         // Password Field
+//        constraints.gridx = 0
+//        constraints.gridy = 4
+//        add(passwordField, constraints)
+        // Password Field with Eye Icon Toggle
+//        constraints.gridx = 0
+//        constraints.gridy = 4
+//
+//// Create a panel to hold password field and eye button
+//        val passwordPanel = JPanel(BorderLayout())
+//        passwordPanel.maximumSize = Dimension(200, 30)
+//        passwordPanel.preferredSize = Dimension(200, 30)
+//
+//// Add the password field
+//        passwordPanel.add(passwordField, BorderLayout.CENTER)
+//
+//// Create eye button
+//        val eyeButton = JButton("\uD83D\uDC41").apply {
+//            preferredSize = Dimension(40, 30)
+//            isFocusPainted = false
+//            isBorderPainted = false
+//            isContentAreaFilled = false
+//            toolTipText = "Show/Hide Password"
+//        }
+//
+//        var isPasswordVisible = false
+//
+//        eyeButton.addActionListener {
+//            isPasswordVisible = !isPasswordVisible
+//            if (isPasswordVisible) {
+//                passwordField.echoChar = 0.toChar()  // show text
+//                eyeButton.text = "\uD83D\uDC41\u200D\uD83D\uDD12" // eye with slash emoji
+//            } else {
+//                passwordField.echoChar = '•'
+//                eyeButton.text = "\uD83D\uDC41" // normal eye emoji
+//            }
+//        }
+//
+//// Initially set the masking character
+//        passwordField.echoChar = '•'
+//
+//// Add eye button to right side of password field
+//        passwordPanel.add(eyeButton, BorderLayout.EAST)
+//
+//// Add password panel to form
+//        add(passwordPanel, constraints)
+
         constraints.gridx = 0
         constraints.gridy = 4
-        add(passwordField, constraints)
+
+        val passwordPanel = JPanel(BorderLayout())
+        passwordPanel.maximumSize = Dimension(200, 30)
+        passwordPanel.preferredSize = Dimension(200, 30)
+
+        passwordPanel.add(passwordField, BorderLayout.CENTER)
+
+        val eyeButton = JButton(eyeClosedIcon).apply {
+            preferredSize = Dimension(40, 30)
+            isFocusPainted = false
+            isBorderPainted = false
+            isContentAreaFilled = false
+            toolTipText = "Show/Hide Password"
+        }
+
+        var isPasswordVisible = false
+
+        eyeButton.addActionListener {
+            isPasswordVisible = !isPasswordVisible
+            if (isPasswordVisible) {
+                passwordField.echoChar = 0.toChar()
+                eyeButton.icon = eyeOpenIcon
+            } else {
+                passwordField.echoChar = '•'
+                eyeButton.icon = eyeClosedIcon
+            }
+        }
+
+        passwordField.echoChar = '•'
+        passwordPanel.add(eyeButton, BorderLayout.EAST)
+        add(passwordPanel, constraints)
+
+
 
         // Submit Button
         constraints.gridx = 0
