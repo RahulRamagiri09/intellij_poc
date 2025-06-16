@@ -38,14 +38,14 @@ object JsonExplain {
             // Show the overview for Quality
             val qualityArray = extractArray(jsonElement["quality"])
             qualityArray.forEach { value ->
-                mainPanel.add(createCard("Quality", value))  // Show only the overview for Quality
+                mainPanel.add(createCard("Quality", value))
                 mainPanel.add(Box.createVerticalStrut(10))
             }
 
             // Include Remarks under the Quality section
             val remarksArray = extractArray(jsonElement["remarks"])
             remarksArray.forEach { value ->
-                mainPanel.add(createCard("Remarks", value))  // Show only the overview for Remarks
+                mainPanel.add(createCard("Remarks", value))
                 mainPanel.add(Box.createVerticalStrut(10))
             }
 
@@ -81,7 +81,7 @@ object JsonExplain {
 
             val downloadButton = JButton("Download as PDF").apply {
                 font = java.awt.Font("Arial", java.awt.Font.BOLD, 14)
-                background = Color(100, 150, 200)
+                background = Color(30, 30, 30)
                 foreground = Color.WHITE
                 addActionListener {
                     saveAsPdf(response)

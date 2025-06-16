@@ -119,7 +119,7 @@ object JsonExplainCode {
 
             val downloadButton = JButton("Download as PDF").apply {
                 font = java.awt.Font("Arial", java.awt.Font.BOLD, 14)
-                background = Color(100, 150, 200)
+                background = Color(30, 30, 30)
                 foreground = Color.WHITE
                 addActionListener {
                     saveAsPdf(response)
@@ -201,10 +201,8 @@ object JsonExplainCode {
             explanationArray.forEachIndexed { index, item ->
                 val obj = item.jsonObject
 
-                document.add(Paragraph("Explanation", headingFont))
-//                document.add(Chunk.NEWLINE)
+                document.add(Paragraph("Explanation:", headingFont))
                 document.add(Paragraph(" "))
-                // Overview + Detailed Explanation
                 val overview = obj["overview"]?.jsonPrimitive?.content ?: "N/A"
                 val detailed = obj["detailedExplanation"]?.jsonPrimitive?.content ?: "N/A"
                 val expTable = PdfPTable(2).apply {
@@ -218,7 +216,7 @@ object JsonExplainCode {
                 document.add(Chunk.NEWLINE)
 
                 // Key Components
-                document.add(Paragraph("Key Components", labelFont))
+                document.add(Paragraph("Key Components:", headingFont))
                 document.add(Paragraph(" "))
                 val kcTable = PdfPTable(2).apply {
                     widthPercentage = 100f
@@ -305,11 +303,19 @@ object JsonExplainCode {
         }
     }
 
-    private fun createSectionLabel(title: String): JLabel {
-        return JLabel(title).apply {
+    private fun createSectionLabel(title: String): JPanel {
+        val label = JLabel(title).apply {
             font = java.awt.Font("Arial", java.awt.Font.BOLD, 18)
             foreground = LIGHT_TEXT
+        }
+
+        return JPanel().apply {
+            layout = BoxLayout(this, BoxLayout.X_AXIS)
+            background = DARK_BG
             border = BorderFactory.createEmptyBorder(10, 10, 5, 10)
+            add(Box.createHorizontalGlue())
+            add(label)
+            add(Box.createHorizontalGlue())
         }
     }
 

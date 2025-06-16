@@ -118,9 +118,7 @@ fun renderResultsPanel(resultsJson: String, language: String = ""): JPanel {
         val testcases = root["testcases"]?.jsonArray ?: return errorPanel("No test cases found.")
         val checkboxTestcases = mutableListOf<Pair<JCheckBox, JsonObject>>()
 
-        mainPanel.add(createSectionLabel("Filewise Unit Test Cases:"))
-
-        // ✅ Add Select All checkbox
+        //  Add Select All checkbox
         val selectAllCheckbox = JCheckBox("Select All").apply {
             isSelected = false
             foreground = LIGHT_TEXT
@@ -176,7 +174,7 @@ fun renderResultsPanel(resultsJson: String, language: String = ""): JPanel {
         }
 
         val downloadButton = JButton("Download as PDF").apply {
-            background = Color(100, 100, 255)
+            background = Color(30, 30, 30)
             foreground = Color.WHITE
             font = AwtFont("Arial", AwtFont.BOLD, 14)
             addActionListener {
@@ -199,7 +197,7 @@ fun renderResultsPanel(resultsJson: String, language: String = ""): JPanel {
 
         if (codeExtension != null) {
             val downloadCodeButton = JButton("Download .$codeExtension").apply {
-                background = Color(100, 100, 255)
+                background = Color(30, 30, 30)
                 foreground = Color.WHITE
                 font = AwtFont("Arial", AwtFont.BOLD, 14)
 

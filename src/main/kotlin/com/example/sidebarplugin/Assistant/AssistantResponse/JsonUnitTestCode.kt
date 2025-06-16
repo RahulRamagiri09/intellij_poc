@@ -73,7 +73,7 @@ object JsonUnitTestCode {
 
             // ======= PDF Button =======
             val pdfButton = JButton("Download as PDF").apply {
-                background = Color(100, 149, 237)
+                background = Color(30, 30, 30)
                 foreground = Color.WHITE
                 font = AwtFont("Arial", AwtFont.BOLD, 14)
             }
@@ -198,14 +198,22 @@ object JsonUnitTestCode {
             }
         }
 
-        private fun createSectionLabel(title: String): JLabel {
-            return JLabel(title).apply {
-                font = AwtFont("Arial", AwtFont.BOLD, 18)
-                foreground = LIGHT_TEXT
-                alignmentX = Component.LEFT_ALIGNMENT
-                border = BorderFactory.createEmptyBorder(10, 10, 5, 10)
-            }
+    private fun createSectionLabel(title: String): JPanel {
+        val label = JLabel(title).apply {
+            font = AwtFont("Arial", AwtFont.BOLD, 18)
+            foreground = LIGHT_TEXT
         }
+
+        return JPanel().apply {
+            layout = BoxLayout(this, BoxLayout.X_AXIS)
+            background = DARK_BG
+            border = BorderFactory.createEmptyBorder(10, 10, 5, 10)
+            add(Box.createHorizontalGlue())
+            add(label)
+            add(Box.createHorizontalGlue())
+        }
+    }
+
 
     private fun createCard(label: String?, content: String): JPanel {
         val panel = JPanel(GridBagLayout())

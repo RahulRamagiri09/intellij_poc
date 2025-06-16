@@ -26,7 +26,7 @@ object JsonOverallReview {
             }
 
             // ======= Summary Section =======
-            mainPanel.add(createSectionLabel("Summary :"))
+            mainPanel.add(createSectionLabel("Summary"))
             val summaryData = listOf(
                 arrayOf(
                     jsonElement["quality"]?.jsonPrimitive?.content ?: "N/A",
@@ -40,7 +40,7 @@ object JsonOverallReview {
             mainPanel.add(Box.createVerticalStrut(15))
 
             // ======= Issues =======
-            mainPanel.add(createSectionLabel("Issues :"))
+//            mainPanel.add(createSectionLabel("Issues"))
             val issues = jsonElement["issues"]?.jsonObject
             val categoryOrder = listOf("Quality", "Performance", "Security", "Organization Standards", "CK Metrics", "Syntax", "Cloud Violations")
 
@@ -79,7 +79,7 @@ object JsonOverallReview {
             // ======= PDF Button =======
             val downloadButton = JButton("Download as PDF").apply {
                 alignmentX = Component.LEFT_ALIGNMENT
-                background = Color(100, 100, 255)
+                background = Color(30, 30, 30)
                 foreground = Color.WHITE
                 font = AwtFont("Arial", AwtFont.BOLD, 14)
                 addActionListener {
@@ -124,12 +124,17 @@ object JsonOverallReview {
         }
     }
 
-    private fun createSectionLabel(title: String): JLabel {
-        return JLabel(title).apply {
+    private fun createSectionLabel(title: String): JPanel {
+        val label = JLabel(title).apply {
             font = AwtFont("Arial", AwtFont.BOLD, 18)
             foreground = LIGHT_TEXT
-            alignmentX = Component.LEFT_ALIGNMENT
-            border = BorderFactory.createEmptyBorder(10, 10, 5, 10)
+            horizontalAlignment = SwingConstants.CENTER
+        }
+
+        return JPanel(FlowLayout(FlowLayout.CENTER)).apply {
+            background = DARK_BG
+            alignmentX = Component.LEFT_ALIGNMENT // prevent shifting other components
+            add(label)
         }
     }
 

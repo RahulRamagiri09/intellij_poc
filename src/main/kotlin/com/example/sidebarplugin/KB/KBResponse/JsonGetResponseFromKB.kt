@@ -61,7 +61,7 @@ object JsonGetResponseFromKB {
         scrollPane.verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
 
         val downloadButton = JButton("Download PDF").apply {
-            background = Color(100, 100, 255)
+            background = Color(30, 30, 30)
             foreground = Color.WHITE
             isFocusPainted = false
             border = BorderFactory.createEmptyBorder()
