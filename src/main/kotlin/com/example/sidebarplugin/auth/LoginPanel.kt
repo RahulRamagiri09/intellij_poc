@@ -158,8 +158,42 @@ class LoginPanel(private val project: Project) : JPanel() {
                         showMessage("Error: No access token found", JOptionPane.ERROR_MESSAGE)
                     }
                 } else {
-                    val errorMessage = BufferedReader(InputStreamReader(connection.errorStream)).readText()
-                    showMessage("Login Failed: $errorMessage", JOptionPane.ERROR_MESSAGE)
+
+//                    val errorBody = BufferedReader(InputStreamReader(connection.errorStream)).readText()
+////
+//                    val msg = try {
+//                        val jsonError = Json.parseToJsonElement(errorBody).jsonObject
+//                        println("Raw API Response (jsonerror): $jsonError")
+//                        val detailArray = jsonError["detail"]?.jsonArray
+//                        val firstDetail = detailArray?.getOrNull(0)?.jsonObject
+//                        val message = firstDetail?.get("msg")?.jsonPrimitive?.content ?: "Unknown error"
+//                        message
+//                    } catch (e: Exception) {
+//                        "An unexpected error occurred"
+//                    }
+//
+//                    showMessage("Login Failed: $msg", JOptionPane.ERROR_MESSAGE)
+                    val errorBody = BufferedReader(InputStreamReader(connection.errorStream)).readText()
+
+                    val msg = try {
+                        val jsonError = Json.parseToJsonElement(errorBody).jsonObject
+                        println("Raw API Response (jsonerror): $jsonError")
+
+                        val detailElement = jsonError["detail"]
+                        when {
+                            detailElement == null -> "Unknown error"
+                            detailElement is JsonPrimitive -> detailElement.content  // directly string
+                            detailElement is JsonArray -> {
+                                val firstDetail = detailElement.getOrNull(0)?.jsonObject
+                                firstDetail?.get("msg")?.jsonPrimitive?.content ?: "Unknown error"
+                            }
+                            else -> "Unknown error"
+                        }
+                    } catch (e: Exception) {
+                        "An unexpected error occurred"
+                    }
+
+                    showMessage(msg, JOptionPane.ERROR_MESSAGE)
                 }
                 connection.disconnect()
             } catch (e: Exception) {
