@@ -6,7 +6,7 @@ plugins {
 
 group = "org"
 //version = "1.0-SNAPSHOT"
-version = "1.3-NeoAI"
+version = "1.4-NeoAI"
 repositories {
     mavenCentral()
     maven { url = uri("https://www.jetbrains.com/intellij-repository/releases") }
