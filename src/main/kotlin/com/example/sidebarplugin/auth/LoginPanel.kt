@@ -14,6 +14,7 @@ import java.util.Base64
 import javax.swing.JOptionPane
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.util.IconLoader
+import com.example.sidebarplugin.utils.EncryptionUtils
 
 class LoginPanel(private val project: Project) : JPanel() {
     //    private val emailField = JTextField("rahul97@gmail.com", 20).apply {
@@ -72,53 +73,6 @@ class LoginPanel(private val project: Project) : JPanel() {
         constraints.gridx = 0
         constraints.gridy = 3
         add(JLabel("Password:"), constraints)
-
-        // Password Field
-//        constraints.gridx = 0
-//        constraints.gridy = 4
-//        add(passwordField, constraints)
-        // Password Field with Eye Icon Toggle
-//        constraints.gridx = 0
-//        constraints.gridy = 4
-//
-//// Create a panel to hold password field and eye button
-//        val passwordPanel = JPanel(BorderLayout())
-//        passwordPanel.maximumSize = Dimension(200, 30)
-//        passwordPanel.preferredSize = Dimension(200, 30)
-//
-//// Add the password field
-//        passwordPanel.add(passwordField, BorderLayout.CENTER)
-//
-//// Create eye button
-//        val eyeButton = JButton("\uD83D\uDC41").apply {
-//            preferredSize = Dimension(40, 30)
-//            isFocusPainted = false
-//            isBorderPainted = false
-//            isContentAreaFilled = false
-//            toolTipText = "Show/Hide Password"
-//        }
-//
-//        var isPasswordVisible = false
-//
-//        eyeButton.addActionListener {
-//            isPasswordVisible = !isPasswordVisible
-//            if (isPasswordVisible) {
-//                passwordField.echoChar = 0.toChar()  // show text
-//                eyeButton.text = "\uD83D\uDC41\u200D\uD83D\uDD12" // eye with slash emoji
-//            } else {
-//                passwordField.echoChar = '•'
-//                eyeButton.text = "\uD83D\uDC41" // normal eye emoji
-//            }
-//        }
-//
-//// Initially set the masking character
-//        passwordField.echoChar = '•'
-//
-//// Add eye button to right side of password field
-//        passwordPanel.add(eyeButton, BorderLayout.EAST)
-//
-//// Add password panel to form
-//        add(passwordPanel, constraints)
 
         constraints.gridx = 0
         constraints.gridy = 4
@@ -217,13 +171,22 @@ class LoginPanel(private val project: Project) : JPanel() {
         val storedUrl = persistentState.getStoredUrl()?.trimEnd('/') ?: ""
         SwingUtilities.invokeLater {
             try {
-                val apiUrl = "$storedUrl/auth/login" // Replace with your API URL
-                val requestBody = "email=$email&password=$password"
+                val apiUrl = "$storedUrl/auth/login"
+
+                // Encrypt the password
+                val encryptedPassword = EncryptionUtils.encryptPassword(password)
+
+                val requestBody = "username=$email&password=$encryptedPassword"
+
+
+                println("Sending login request: $requestBody")
+
                 val url = URL(apiUrl)
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "POST"
                 connection.doOutput = true
                 connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+
                 connection.outputStream.use { it.write(requestBody.toByteArray()) }
 
                 val responseCode = connection.responseCode
@@ -233,38 +196,20 @@ class LoginPanel(private val project: Project) : JPanel() {
                     val accessToken = jsonResponse["access_token"]?.jsonPrimitive?.content
 
                     if (accessToken != null) {
-                        urlState.setAuthToken(accessToken) // Store the auth token
+                        urlState.setAuthToken(accessToken)
                         showMessage("Login Successful!", JOptionPane.INFORMATION_MESSAGE)
                         replacePanelWithSidebarToolWindow()
                     } else {
                         showMessage("Error: No access token found", JOptionPane.ERROR_MESSAGE)
                     }
                 } else {
-
-//                    val errorBody = BufferedReader(InputStreamReader(connection.errorStream)).readText()
-////
-//                    val msg = try {
-//                        val jsonError = Json.parseToJsonElement(errorBody).jsonObject
-//                        println("Raw API Response (jsonerror): $jsonError")
-//                        val detailArray = jsonError["detail"]?.jsonArray
-//                        val firstDetail = detailArray?.getOrNull(0)?.jsonObject
-//                        val message = firstDetail?.get("msg")?.jsonPrimitive?.content ?: "Unknown error"
-//                        message
-//                    } catch (e: Exception) {
-//                        "An unexpected error occurred"
-//                    }
-//
-//                    showMessage("Login Failed: $msg", JOptionPane.ERROR_MESSAGE)
                     val errorBody = BufferedReader(InputStreamReader(connection.errorStream)).readText()
-
                     val msg = try {
                         val jsonError = Json.parseToJsonElement(errorBody).jsonObject
-                        println("Raw API Response (jsonerror): $jsonError")
-
                         val detailElement = jsonError["detail"]
                         when {
                             detailElement == null -> "Unknown error"
-                            detailElement is JsonPrimitive -> detailElement.content  // directly string
+                            detailElement is JsonPrimitive -> detailElement.content
                             detailElement is JsonArray -> {
                                 val firstDetail = detailElement.getOrNull(0)?.jsonObject
                                 firstDetail?.get("msg")?.jsonPrimitive?.content ?: "Unknown error"

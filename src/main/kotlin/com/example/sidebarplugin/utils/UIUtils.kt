@@ -81,7 +81,7 @@ object UIUtils {
 
         val dialog = object : DialogWrapper(project, true) {
             init {
-//                title = "Explanationss"
+//                title = "Explanation"
                 this.title = title
                 init()
             }

@@ -14,7 +14,7 @@ import com.intellij.openapi.components.ServiceManager
 import kotlinx.serialization.encodeToString
 import com.example.sidebarplugin.SidebarToolWindow
 import com.intellij.openapi.util.IconLoader
-
+import com.example.sidebarplugin.utils.EncryptionUtils
 
 class RegisterPanel(private val project: Project) : JPanel() {
     private val usernameField = JTextField(20).apply {
@@ -197,8 +197,11 @@ class RegisterPanel(private val project: Project) : JPanel() {
                     "username" to JsonPrimitive(username),
                     "full_name" to JsonPrimitive(fullName),
                     "email" to JsonPrimitive(email),
-                    "password" to JsonPrimitive(password),
-                    "confirm_password" to JsonPrimitive(confirmPassword),
+//                    "password" to JsonPrimitive(password),
+//                    "confirm_password" to JsonPrimitive(confirmPassword),
+                    "password" to JsonPrimitive(EncryptionUtils.encryptPassword(password)),
+                    "confirm_password" to JsonPrimitive(EncryptionUtils.encryptPassword(confirmPassword)),
+
                     "company_name" to JsonPrimitive(companyName)
                 )))
 
